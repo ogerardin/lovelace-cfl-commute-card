@@ -67,6 +67,19 @@ export function getRelativeTime(timestamp) {
 }
 
 /**
+ * Check if a train is delayed with no specific expected time
+ * (e.g. expected_departure is "Delayed" rather than an actual time)
+ * @param {Object} train - Train object
+ * @returns {boolean}
+ */
+function _isUnknownDelay(train) {
+  if (!train || !train.expected_departure) return false;
+  if (train.expected_departure === train.scheduled_departure) return false;
+  // If it doesn't contain a time pattern (HH:MM), it's a status word like "Delayed"
+  return !/\d{1,2}:\d{2}/.test(String(train.expected_departure));
+}
+
+/**
  * Get status class for a train based on its state
  * @param {Object} train - Train object
  * @returns {string} CSS class name
@@ -78,6 +91,7 @@ export function getStatusClass(train) {
   if (train.is_no_service) return 'no-service';
   if (train.delay_minutes >= 10) return 'major-delay';
   if (train.delay_minutes > 0) return 'minor-delay';
+  if (_isUnknownDelay(train)) return 'minor-delay';
   return 'on-time';
 }
 
@@ -95,6 +109,7 @@ export function getStatusIcon(train, useIcons = true) {
   if (train.is_no_service) return '⊗';
   if (train.delay_minutes >= 10) return '🔴';
   if (train.delay_minutes > 0) return '⚠️';
+  if (_isUnknownDelay(train)) return '⚠️';
   return '✓';
 }
 
@@ -111,6 +126,7 @@ export function getStatusText(train) {
   if (train.delay_minutes > 0) {
     return `Delayed ${train.delay_minutes} min${train.delay_minutes !== 1 ? 's' : ''}`;
   }
+  if (_isUnknownDelay(train)) return 'Delayed';
   return 'On time';
 }
 
@@ -198,7 +214,7 @@ export function filterTrains(trains, config) {
   // Filter out on-time trains if configured
   if (config.hide_on_time_trains) {
     filtered = filtered.filter(train =>
-      train.is_cancelled || train.is_no_service || train.delay_minutes > 0
+      train.is_cancelled || train.is_no_service || train.delay_minutes > 0 || _isUnknownDelay(train)
     );
   }
 
