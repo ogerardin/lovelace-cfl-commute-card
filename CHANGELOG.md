@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2026-03-14
+
+### Added
+- Conditionally show return journey toggle only when a reverse route entity exists
+
+### Fixed
+- Show correct train status when `expected_departure` is "Delayed" with no time provided
+
 ## [1.0.2] - 2026-02-22
 
 ### Changed
