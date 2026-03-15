@@ -76,7 +76,7 @@ function _isUnknownDelay(train) {
   if (!train || !train.expected_departure) return false;
   if (train.expected_departure === train.scheduled_departure) return false;
   // If it doesn't contain a time pattern (HH:MM), it's a status word like "Delayed"
-  return !/\d{1,2}:\d{2}/.test(String(train.expected_departure));
+  return !/\d{1,2}:\d{2}/.test(train.expected_departure);
 }
 
 /**
@@ -218,10 +218,10 @@ export function filterTrains(trains, config) {
     );
   }
 
-  // Filter by minimum delay
+  // Filter by minimum delay — keep cancelled, unknown-delay, and sufficiently delayed trains
   if (config.min_delay_to_show > 0) {
     filtered = filtered.filter(train =>
-      train.is_cancelled || train.delay_minutes >= config.min_delay_to_show
+      train.is_cancelled || train.is_no_service || _isUnknownDelay(train) || train.delay_minutes >= config.min_delay_to_show
     );
   }
 
@@ -239,6 +239,11 @@ export function sortTrains(trains) {
   return [...trains].sort((a, b) => {
     const timeA = new Date(a.scheduled_departure).getTime();
     const timeB = new Date(b.scheduled_departure).getTime();
+    const aValid = !isNaN(timeA);
+    const bValid = !isNaN(timeB);
+    if (!aValid && !bValid) return 0;
+    if (!aValid) return 1;
+    if (!bValid) return -1;
     return timeA - timeB;
   });
 }

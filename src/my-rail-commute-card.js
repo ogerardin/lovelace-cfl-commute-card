@@ -56,7 +56,6 @@ class MyRailCommuteCard extends LitElement {
     this._disruptionMessage = '';
     this._resolvedStatusEntityId = '';
     this._loading = true;
-    this._pressTimer = null;
     this._toastTimer = null;
     this._returnEntityId = null;
     this._showReturn = false;
@@ -191,10 +190,15 @@ class MyRailCommuteCard extends LitElement {
       // Method 1: Direct all_trains attribute from integration
       // Add train_id based on entity naming pattern
       const baseName = activeEntityId.replace('sensor.', '').replace('_summary', '').replace('_commute_summary', '');
-      this._trains = activeEntity.attributes.all_trains.map((train, index) => ({
-        ...train,
-        train_id: `sensor.${baseName}_train_${train.train_number || (index + 1)}` // Add train_id for click handler
-      }));
+      this._trains = activeEntity.attributes.all_trains.map((train, index) => {
+        const rawNum = train.train_number != null && train.train_number !== ''
+          ? String(train.train_number).toLowerCase().replace(/[^a-z0-9]/g, '_')
+          : String(index + 1);
+        return {
+          ...train,
+          train_id: `sensor.${baseName}_train_${rawNum}`
+        };
+      });
     } else {
       // Method 2: Auto-discover individual train sensors
       this._trains = this._getTrainsFromIndividualSensors(hass, activeEntityId);
@@ -832,22 +836,26 @@ class MyRailCommuteCard extends LitElement {
   }
 
   _handleTouchStart(e) {
-    this._pressTimer = setTimeout(() => {
+    const el = e.currentTarget;
+    el._pressTimer = setTimeout(() => {
+      el._pressTimer = null;
       this._handleHold();
     }, 500);
   }
 
-  _handleTouchEnd() {
-    if (this._pressTimer) {
-      clearTimeout(this._pressTimer);
-      this._pressTimer = null;
+  _handleTouchEnd(e) {
+    const el = e.currentTarget;
+    if (el._pressTimer) {
+      clearTimeout(el._pressTimer);
+      el._pressTimer = null;
     }
   }
 
-  _handleTouchMove() {
-    if (this._pressTimer) {
-      clearTimeout(this._pressTimer);
-      this._pressTimer = null;
+  _handleTouchMove(e) {
+    const el = e.currentTarget;
+    if (el._pressTimer) {
+      clearTimeout(el._pressTimer);
+      el._pressTimer = null;
     }
   }
 
@@ -888,10 +896,6 @@ class MyRailCommuteCard extends LitElement {
     if (this._toastTimer) {
       clearTimeout(this._toastTimer);
       this._toastTimer = null;
-    }
-    if (this._pressTimer) {
-      clearTimeout(this._pressTimer);
-      this._pressTimer = null;
     }
   }
 
