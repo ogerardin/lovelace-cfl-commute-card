@@ -2,6 +2,5 @@
   "name": "CFL Commute Card",
   "render_readme": true,
   "filename": "cfl-commute-card.js",
-  "content_in_root": false,
-  "category": "frontend"
+  "content_in_root": false
 }
