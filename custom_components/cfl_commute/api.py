@@ -38,6 +38,8 @@ class CFLCommuteClient:
     BASE_URL = "https://cdt.hafas.de/opendata/apiserver"
 
     RAIL_OPERATORS = {"CFL", "EC", "IC", "TER", "TGV", "RE", "RB"}
+    # Include bus operators for stations that only have bus data
+    BUS_OPERATORS = {"AVL", "RGTR", "TICE", "Bus"}
 
     def __init__(self, api_key: str):
         """Initialize the client."""
@@ -65,22 +67,41 @@ class CFLCommuteClient:
         data = await self._request(url, params)
 
         stations = []
-        location_list = data.get("LocationList", {})
-        stop_locations = location_list.get("StopLocation", [])
+        # Handle different response formats
+        location_data = data.get("stopLocationOrCoordLocation", [])
 
-        if isinstance(stop_locations, dict):
-            stop_locations = [stop_locations]
+        if isinstance(location_data, dict):
+            location_data = [location_data]
 
-        for stop in stop_locations:
-            if query.lower() in stop.get("name", "").lower():
-                stations.append(
-                    Station(
-                        id=stop.get("id"),
-                        name=stop.get("name"),
-                        lon=float(stop.get("lon", 0)),
-                        lat=float(stop.get("lat", 0)),
-                    )
+        for loc in location_data:
+            stop = loc.get("StopLocation")
+            if not stop:
+                continue
+
+            # Extract station name
+            name = stop.get("name", "")
+            if query.lower() not in name.lower():
+                continue
+
+            # Extract ID - could be in 'id' or 'extId'
+            station_id = stop.get("id", stop.get("extId", ""))
+
+            # Parse numeric ID from complex format like "A=1@O=Name@X=...@L=160102002@"
+            if "L=" in station_id:
+                parts = station_id.split("@")
+                for part in parts:
+                    if part.startswith("L="):
+                        station_id = part[2:]
+                        break
+
+            stations.append(
+                Station(
+                    id=station_id,
+                    name=name,
+                    lon=float(stop.get("lon", 0)),
+                    lat=float(stop.get("lat", 0)),
                 )
+            )
 
         return stations
 
@@ -105,33 +126,64 @@ class CFLCommuteClient:
             departure_list = [departure_list]
 
         for dep in departure_list:
-            product = dep.get("product", {})
-            operator = product.get("cat", "")
+            # Handle different response formats
+            product = dep.get("ProductAtStop", {})
+            product_name = product.get("name", "")
 
-            if operator not in self.RAIL_OPERATORS:
+            # Get operator info
+            operator_info = product.get("operatorInfo", {})
+            operator_name = operator_info.get("nameS", operator_info.get("name", ""))
+
+            # Check if it's a valid transport type
+            cat_out = product.get("catOut", "")
+            if cat_out not in self.RAIL_OPERATORS and cat_out not in self.BUS_OPERATORS:
                 continue
 
-            is_cancelled = dep.get("cancelled", False)
-            delay = dep.get("delay")
+            # Determine operator
+            if operator_name:
+                operator = operator_name
+            elif cat_out:
+                operator = cat_out
+            else:
+                operator = "Unknown"
 
-            dep_time = dep.get("dep", "")
-            scheduled_time = dep.get("depTime", "")
+            # Parse times
+            scheduled_time = dep.get("time", "")
+            actual_time = dep.get("rtTime", scheduled_time)
 
-            calling_points = self._extract_calling_points(dep)
+            # Calculate delay in minutes
+            delay_minutes = 0
+            if scheduled_time and actual_time:
+                try:
+                    sched_h, sched_m = map(int, scheduled_time.split(":"))
+                    actual_h, actual_m = map(int, actual_time.split(":"))
+                    delay_minutes = (actual_h * 60 + actual_m) - (
+                        sched_h * 60 + sched_m
+                    )
+                except:
+                    delay_minutes = 0
+
+            # Check if cancelled
+            is_cancelled = dep.get("JourneyStatus") == "C" or not dep.get(
+                "reachable", True
+            )
+
+            # Get direction
+            direction = dep.get("direction", "")
 
             departures.append(
                 Departure(
                     station_id=station_id,
                     scheduled_departure=scheduled_time,
-                    expected_departure=dep_time,
+                    expected_departure=actual_time,
                     platform=dep.get("platform", "TBA"),
-                    line=dep.get("line", ""),
-                    direction=dep.get("direction", ""),
+                    line=product_name.split()[-1] if product_name else "",
+                    direction=direction,
                     operator=operator,
-                    train_number=dep.get("trainNumber", ""),
+                    train_number=dep.get("num", ""),
                     is_cancelled=is_cancelled,
-                    delay_minutes=int(delay) if delay else 0,
-                    calling_points=calling_points,
+                    delay_minutes=delay_minutes,
+                    calling_points=[],
                 )
             )
 

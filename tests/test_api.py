@@ -25,22 +25,26 @@ class TestCFLCommuteClient:
         client = CFLCommuteClient("test_api_key")
 
         mock_response = {
-            "LocationList": {
-                "StopLocation": [
-                    {
-                        "id": "200426002",
+            "stopLocationOrCoordLocation": [
+                {
+                    "StopLocation": {
+                        "id": "A=1@O=Luxembourg@X=6114948@Y=49626164@U=82@L=200426002@",
+                        "extId": "200426002",
                         "name": "Luxembourg",
-                        "lon": "6.1",
-                        "lat": "49.6",
-                    },
-                    {
-                        "id": "200426003",
+                        "lon": 6.1,
+                        "lat": 49.6,
+                    }
+                },
+                {
+                    "StopLocation": {
+                        "id": "A=1@O=Luxembourg Airport@X=6200000@Y=4960000@U=82@L=200426003@",
+                        "extId": "200426003",
                         "name": "Luxembourg Airport",
-                        "lon": "6.2",
-                        "lat": "49.6",
-                    },
-                ]
-            }
+                        "lon": 6.2,
+                        "lat": 49.6,
+                    }
+                },
+            ]
         }
 
         with patch.object(client, "_request", new_callable=AsyncMock) as mock_request:
@@ -58,26 +62,26 @@ class TestCFLCommuteClient:
         mock_response = {
             "Departure": [
                 {
-                    "product": {"cat": "CFL"},
-                    "dep": "10:00",
-                    "depTime": "10:00",
-                    "platform": "1",
-                    "line": "1",
+                    "ProductAtStop": {
+                        "name": "Train 1",
+                        "catOut": "CFL",
+                        "operatorInfo": {"nameS": "CFL"},
+                    },
+                    "time": "10:00",
+                    "rtTime": "10:00",
                     "direction": "Test",
-                    "trainNumber": "1234",
-                    "cancelled": False,
-                    "delay": 0,
+                    "num": "1234",
                 },
                 {
-                    "product": {"cat": "BUS"},
-                    "dep": "10:05",
-                    "depTime": "10:05",
-                    "platform": "TBA",
-                    "line": "Bus1",
+                    "ProductAtStop": {
+                        "name": "Bus 1",
+                        "catOut": "Bus",
+                        "operatorInfo": {"nameS": "AVL"},
+                    },
+                    "time": "10:05",
+                    "rtTime": "10:05",
                     "direction": "Test",
-                    "trainNumber": "",
-                    "cancelled": False,
-                    "delay": 0,
+                    "num": "",
                 },
             ]
         }
@@ -86,5 +90,8 @@ class TestCFLCommuteClient:
             mock_request.return_value = mock_response
             departures = await client.get_departures("200426002")
 
-        assert len(departures) == 1
-        assert departures[0].operator == "CFL"
+        # Both CFL (rail) and AVL (bus) should be included
+        assert len(departures) == 2
+        operators = [d.operator for d in departures]
+        assert "CFL" in operators
+        assert "AVL" in operators
