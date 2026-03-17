@@ -1,0 +1,35 @@
+{
+  "name": "cfl-commute-card",
+  "version": "1.0.0",
+  "description": "A custom Lovelace card for Home Assistant that displays CFL train departure information",
+  "type": "module",
+  "main": "dist/cfl-commute-card.js",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "cfl",
+    "luxembourg",
+    "train"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "lit": "^3.0.0",
+    "custom-card-helpers": "^1.9.0"
+  },
+  "devDependencies": {
+    "rollup": "^4.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-babel": "^6.0.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0"
+  }
+}
