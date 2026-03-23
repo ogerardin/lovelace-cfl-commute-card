@@ -3,7 +3,7 @@
 ## Setup
 
 ### Configure your commutes
-Install as described in https://github.com/ogerardin/hacs-cfl-commute/blob/main/README.md
+Install as described in https://github.com/ogerardin/ha-cfl-commute/blob/main/README.md
 
 Create at least one commute. This will create sensors like:
 - `sensor.your_commute_name_summary`

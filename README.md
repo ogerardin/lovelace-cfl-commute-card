@@ -4,7 +4,7 @@
 [![GitHub Release](https://img.shields.io/github/release/ogerardin/lovelace-cfl-commute-card.svg?style=flat-square)](https://github.com/ogerardin/lovelace-cfl-commute-card/releases)
 [![License](https://img.shields.io/github/license/ogerardin/lovelace-cfl-commute-card.svg?style=flat-square)](LICENSE)
 
-A beautiful, feature-rich custom Lovelace card for Home Assistant that displays CFL (Luxembourg Railways) train departure information. Designed to work seamlessly with the [HACS CFL Commute](https://github.com/ogerardin/hacs-cfl-commute) integration.
+A beautiful, feature-rich custom Lovelace card for Home Assistant that displays CFL (Luxembourg Railways) train departure information. Designed to work seamlessly with the [HACS CFL Commute](https://github.com/ogerardin/ha-cfl-commute) integration.
 
 ![CFL Commute Card](screenshots/full-view.png)
 
@@ -20,7 +20,7 @@ A beautiful, feature-rich custom Lovelace card for Home Assistant that displays 
 ## Requirements
 
 - Home Assistant 2024.1.0 or higher
-- [HACS CFL Commute](https://github.com/ogerardin/hacs-cfl-commute) integration installed
+- [HA CFL Commute](https://github.com/ogerardin/ha-cfl-commute) integration installed
 
 ## Installation
 
@@ -49,7 +49,7 @@ resources:
 
 ## Related Projects
 
-- [HACS CFL Commute](https://github.com/ogerardin/hacs-cfl-commute) - The integration this card is designed for
+- [HA CFL Commute](https://github.com/ogerardin/ha-cfl-commute) - The integration this card is designed for
 - [lovelace-my-rail-commute-card](https://github.com/adamf83/lovelace-my-rail-commute-card) - The inspiration for this card (UK Rail version)
 
 ---
