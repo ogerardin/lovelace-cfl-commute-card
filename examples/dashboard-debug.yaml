@@ -1,9 +1,9 @@
-# Debug Configuration for UK Rail Commute Card
+# Debug Configuration for CFL Commute Card
 # Use this to troubleshoot issues
 
-type: custom:my-rail-commute-card
-entity: sensor.london_bridge_to_east_croydon_summary  # YOUR ACTUAL ENTITY
-title: Morning Commute
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary  # YOUR ACTUAL ENTITY
+title: My Commute
 view: full
 show_platform: true
 show_operator: true

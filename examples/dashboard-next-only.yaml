@@ -2,8 +2,8 @@
 # Shows only the next departing train with full details
 # Great for glanceable displays or focus on immediate next train
 
-type: custom:my-rail-commute-card
-entity: sensor.morning_commute_summary
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary
 view: next-only
 title: Next Train
 show_calling_points: true

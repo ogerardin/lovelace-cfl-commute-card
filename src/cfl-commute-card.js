@@ -838,7 +838,7 @@ class CflCommuteCard extends LitElement {
       // Default: open National Rail journey planner
       const originCode = this._origin || '';
       const destCode = this._destination || '';
-      const journeyUrl = `https://www.nationalrail.co.uk/journey-planner/?from=${originCode}&to=${destCode}`;
+      const journeyUrl = `https://www.cfl.lu/fr-fr/search/searchresult?SearchDeparture=${originCode}&SearchArrival=${destCode}`;
       window.open(journeyUrl, '_blank');
     }
   }

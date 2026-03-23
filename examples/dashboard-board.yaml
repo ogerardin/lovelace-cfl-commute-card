@@ -1,9 +1,9 @@
 # Departure Board View
-# Mimics a real UK railway station departure board
+# Mimics a real CFL train station departure board
 # Classic monospace font with amber text on dark background
 
-type: custom:my-rail-commute-card
-entity: sensor.morning_commute_summary
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary
 view: board
 title: Platform Display
 show_header: false

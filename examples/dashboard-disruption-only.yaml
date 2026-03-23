@@ -2,9 +2,9 @@
 # Only shows trains when there's disruption detected
 # Useful for notification boards that stay hidden during normal service
 
-type: custom:my-rail-commute-card
-entity: sensor.morning_commute_summary
-disruption_entity: binary_sensor.morning_commute_severe_disruption
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary
+status_entity: sensor.your_commute_status
 only_show_disrupted: true
 title: Service Disruption Alert
 show_delay_reason: true

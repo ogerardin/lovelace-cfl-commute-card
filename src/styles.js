@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /**
- * Styles for UK Rail Commute Card
+ * Styles for CFL Commute Card
  */
 export const styles = css`
   :host {

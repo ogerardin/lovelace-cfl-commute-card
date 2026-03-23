@@ -1,8 +1,8 @@
-# Advanced UK Rail Commute Card Configuration
+# Advanced CFL Commute Card Configuration
 # This example shows all available options
 
-type: custom:my-rail-commute-card
-entity: sensor.morning_commute_summary
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary
 
 # Display Options
 title: Morning Commute

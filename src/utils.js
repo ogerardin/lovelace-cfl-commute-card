@@ -1,5 +1,5 @@
 /**
- * Utility functions for UK Rail Commute Card
+ * Utility functions for CFL Commute Card
  */
 
 /**

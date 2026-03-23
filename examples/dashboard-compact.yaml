@@ -1,8 +1,8 @@
 # Compact View Configuration
 # Perfect for mobile dashboards or space-constrained layouts
 
-type: custom:my-rail-commute-card
-entity: sensor.evening_commute_summary
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary
 view: compact
 title: Evening Trains
 show_last_updated: false

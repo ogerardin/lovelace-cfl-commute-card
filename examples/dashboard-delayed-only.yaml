@@ -2,8 +2,8 @@
 # Only shows trains that are delayed
 # Perfect for focusing attention on problems
 
-type: custom:my-rail-commute-card
-entity: sensor.morning_commute_summary
+type: custom:cfl-commute-card
+entity: sensor.your_commute_summary
 hide_on_time_trains: true
 min_delay_to_show: 5
 title: Delayed Services
