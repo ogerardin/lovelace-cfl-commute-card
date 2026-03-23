@@ -17,22 +17,27 @@ A beautiful, feature-rich custom Lovelace card for Home Assistant that displays 
 - **Disruption Alerts**: Banner showing service disruptions
 - **Interactive**: Tap for more info, hold to refresh
 
+## Requirements
+
+- Home Assistant 2024.1.0 or higher
+- [HACS CFL Commute](https://github.com/ogerardin/hacs-cfl-commute) integration installed
+
 ## Installation
 
-### HACS (Recommended)
+### Via HACS (Recommended)
 
-1. Open HACS in Home Assistant
-2. Go to "Frontend"
-3. Click the "+" button
+1. Open Home Assistant
+2. Navigate to **HACS** → **Frontend**
+3. Click the **+** button
 4. Search for "CFL Commute Card"
-5. Click "Install"
-6. Refresh your browser
+5. Click **Install**
+6. Refresh your browser (Ctrl+Shift+R or Cmd+Shift+R)
 
 ### Manual Installation
 
-1. Download `cfl-commute-card.js` from the [latest release](https://github.com/ogerardin/lovelace-cfl-commute-card/releases)
-2. Copy it to `/config/www/cfl-commute-card.js`
-3. Add the resource to your Lovelace configuration:
+1. Download the latest `cfl-commute-card.js` from [Releases](https://github.com/ogerardin/lovelace-cfl-commute-card/releases)
+2. Copy the file to `/config/www/cfl-commute-card.js`
+3. Add to your `configuration.yaml`:
 
 ```yaml
 resources:
@@ -40,33 +45,7 @@ resources:
     type: module
 ```
 
-4. Refresh your browser
-
-## Quick Start
-
-### Basic Configuration
-
-```yaml
-type: custom:cfl-commute-card
-entity: sensor.your_commute_summary
-```
-
-### Using the Visual Editor
-
-1. In edit mode, click "Add Card"
-2. Search for "CFL Commute Card"
-3. Select your CFL Commute summary entity
-4. Configure options using the visual interface
-5. Save!
-
-## Requirements
-
-- Home Assistant 2024.1.0 or higher
-- [HACS CFL Commute](https://github.com/ogerardin/hacs-cfl-commute) integration installed
-
-## Configuration
-
-See [QUICKSTART.md](QUICKSTART.md) for detailed configuration options.
+4. Restart Home Assistant
 
 ## Related Projects
 
