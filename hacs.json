@@ -1,6 +1,6 @@
 {
   "name": "CFL Commute Card",
   "country": "LU",
-  "filename": "dist/cfl-commute-card.js",
+  "filename": "cfl-commute-card.js",
   "content_in_root": false
 }
