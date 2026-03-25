@@ -21,17 +21,19 @@ A beautiful, feature-rich custom Lovelace card for Home Assistant that displays 
 
 - Home Assistant 2024.1.0 or higher
 - [HA CFL Commute](https://github.com/ogerardin/ha-cfl-commute) integration installed
+- (optionnal, recommended for easy installation): [HACS](https://www.hacs.xyz/docs/use/)
 
 ## Installation
 
 ### Via HACS (Recommended)
-
-1. Open Home Assistant
-2. Navigate to **HACS** → **Frontend**
-3. Click the **+** button
-4. Search for "CFL Commute Card"
-5. Click **Install**
-6. Refresh your browser (Ctrl+Shift+R or Cmd+Shift+R)
+1. Open HACS
+2. Click on "⋮" (top right), then "Custom repositories"
+3. Fill in as follows:
+    - Repository: `https://github.com/ogerardin/lovelace-cfl-commute-card`
+    - Type: 'Dashboard'
+4. Click "ADD"; after a few seconds the new integration appears under the "New" heading
+5. Click on "⋮"  , then "Download"
+6. Accept the suggestion to refresh your browser
 
 ### Manual Installation
 

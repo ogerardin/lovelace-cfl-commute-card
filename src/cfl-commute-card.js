@@ -934,6 +934,181 @@ class CflCommuteCard extends LitElement {
       show_calling_points: false
     };
   }
+
+  static getConfigSchema() {
+    return [
+      {
+        name: 'entity',
+        required: true,
+        selector: {
+          entity: {}
+        }
+      },
+      {
+        name: 'title',
+        selector: {
+          text: {}
+        }
+      },
+      {
+        name: 'view',
+        selector: {
+          select: {
+            options: [
+              { value: 'full', label: 'Full View' },
+              { value: 'compact', label: 'Compact View' },
+              { value: 'next-only', label: 'Next Train Only' },
+              { value: 'board', label: 'Departure Board' }
+            ]
+          }
+        }
+      },
+      {
+        name: 'theme',
+        selector: {
+          select: {
+            options: [
+              { value: 'auto', label: 'Auto (Follow HA Theme)' },
+              { value: 'light', label: 'Light' },
+              { value: 'dark', label: 'Dark' }
+            ]
+          }
+        }
+      },
+      {
+        name: 'font_size',
+        selector: {
+          select: {
+            options: [
+              { value: 'small', label: 'Small' },
+              { value: 'medium', label: 'Medium' },
+              { value: 'large', label: 'Large' }
+            ]
+          }
+        }
+      },
+      {
+        name: 'show_header',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_route',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_last_updated',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_platform',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_operator',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_calling_points',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_delay_reason',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_journey_time',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_service_type',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'show_animations',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'status_icons',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'compact_height',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'max_calling_points',
+        selector: {
+          number: {
+            min: 1,
+            max: 10,
+            mode: 'box'
+          }
+        }
+      },
+      {
+        name: 'min_delay_to_show',
+        selector: {
+          number: {
+            min: 0,
+            max: 60,
+            mode: 'box'
+          }
+        }
+      },
+      {
+        name: 'hide_on_time_trains',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'only_show_disrupted',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'auto_refresh',
+        selector: {
+          boolean: {}
+        }
+      },
+      {
+        name: 'refresh_interval',
+        selector: {
+          number: {
+            min: 10,
+            max: 300,
+            mode: 'box'
+          }
+        }
+      }
+    ];
+  }
 }
 
 // Register the card
