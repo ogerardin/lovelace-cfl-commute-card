@@ -185,6 +185,10 @@ window.customCards.push({
 5. Add helper methods as private methods (prefixed with `_`)
 6. Run `npm run build` to verify compilation
 
+## Build Before Push
+
+Always run `npm run build` before committing/pushing to ensure the dist/ folder is updated with the latest changes.
+
 ## Commits
 
 Use conventional commit format:
