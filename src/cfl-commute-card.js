@@ -8,11 +8,14 @@ import {
   getStatusText,
   getBoardStatus,
   formatCallingPoints,
+  formatCallingPointsDots,
   abbreviateStation,
   filterTrains,
   sortTrains,
   getTrainIcon,
-  shouldShowTrains
+  shouldShowTrains,
+  getTrainCategory,
+  getTrainNumber
 } from './utils.js';
 import './editor.js'; // Import editor to bundle it
 
@@ -37,7 +40,8 @@ class CflCommuteCard extends LitElement {
       _resolvedStatusEntityId: { type: String },
       _loading: { type: Boolean },
       _returnEntityId: { type: String },
-      _showReturn: { type: Boolean }
+      _showReturn: { type: Boolean },
+      _currentTime: { type: String }
     };
   }
 
@@ -60,6 +64,31 @@ class CflCommuteCard extends LitElement {
     this._returnEntityId = null;
     this._showReturn = false;
     this._returnEntityCacheKey = null;
+    this._currentTime = this._getCurrentTime();
+    this._timeInterval = null;
+  }
+
+  _getCurrentTime() {
+    return new Date().toLocaleTimeString('de-LU', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._timeInterval = setInterval(() => {
+      this._currentTime = this._getCurrentTime();
+    }, 1000);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._timeInterval) {
+      clearInterval(this._timeInterval);
+      this._timeInterval = null;
+    }
   }
 
   setConfig(config) {
@@ -73,7 +102,6 @@ class CflCommuteCard extends LitElement {
     }
     this.config = {
       view: 'full',
-      theme: 'auto',
       show_header: true,
       show_route: true,
       show_last_updated: false,
@@ -111,11 +139,6 @@ class CflCommuteCard extends LitElement {
       if (config.colors.cancelled) {
         this.style.setProperty('--custom-cancelled-color', config.colors.cancelled);
       }
-    }
-
-    // Set theme attribute
-    if (config.theme && config.theme !== 'auto') {
-      this.setAttribute('theme', config.theme);
     }
 
     // Set font size attribute
@@ -724,45 +747,80 @@ class CflCommuteCard extends LitElement {
   _renderBoard() {
     return html`
       <ha-card class="departure-board">
-        <div class="board-header">
-          DEPARTURES  ${this._origin || ''}
+        <div class="board-header-row">
+          <span class="col-time">${this._currentTime}</span>
+          <span class="col-title">Départ/Abfahrt</span>
+          <span class="col-logo">
+            <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(685, 175)">
+                <path fill="#ffffff" d="m -408.46071,-141.30974 h -102.15373 l -46.27892,70.658093 h 41.84846 l 32.09233,-48.666393 h 34.1583 c 16.29871,0 31.49546,-8.28704 40.33356,-21.9917"/>
+                <path fill="#ffffff" d="m -387.96127,-92.643346 53.48716,-82.916484 h -41.82548 l -67.67391,104.908183 h 121.25286 c 16.29871,0 31.49546,-8.287034 40.33339,-21.991699 z m 0,0"/>
+                <path fill="#ffffff" d="m -642.28911,-92.643346 39.3004,-60.924784 h 175.56628 c 16.3217,0 31.49547,-8.28703 40.35655,-21.9917 h -226.89569 c -10.39898,0 -20.08648,5.27987 -25.7335,14.02601 l -43.18013,66.985257 c -6.65718,10.307193 0.73463,23.896916 13.01601,23.896916 h 102.38311 l 14.18676,-21.991699 z m 0,0"/>
+              </g>
+            </svg>
+          </span>
         </div>
         ${this._renderDisruptionBanner()}
 
         <div class="board-content">
-          <div class="board-table">
-            <div class="board-row board-header-row">
-              <span class="col-time">Time</span>
-              <span class="col-dest">Dest</span>
-              <span class="col-plat">Plat</span>
-              <span class="col-status">Status</span>
-            </div>
-
-            ${this._trains.map(train => html`
-              <div
-                class="board-row ${getStatusClass(train)}"
-                @click="${() => this._handleTap(train)}"
-                @touchstart="${this._handleTouchStart}"
-                @touchend="${this._handleTouchEnd}"
-                @touchmove="${this._handleTouchMove}"
-              >
-                <span class="col-time">
-                  ${formatTime(train.scheduled_departure)}
-                </span>
-                <span class="col-dest">
-                  ${abbreviateStation(this._destination || '')}
-                </span>
-                <span class="col-plat">
-                  ${train.platform || '—'}
-                </span>
-                <span class="col-status">
-                  ${getBoardStatus(train)}
-                </span>
-              </div>
-            `)}
-          </div>
+          ${this._trains.map((train, index) => this._renderBoardRow(train, index))}
         </div>
       </ha-card>
+    `;
+  }
+
+  _renderBoardRow(train, index) {
+    const isEven = index % 2 === 0;
+    const statusClass = getStatusClass(train);
+    const hasDelay = train.expected_departure && train.expected_departure !== train.scheduled_departure;
+    const category = getTrainCategory(train);
+    const number = getTrainNumber(train);
+    const callingPoints = train.calling_points || [];
+
+    return html`
+      <div
+        class="board-row ${isEven ? 'board-row-even' : 'board-row-odd'} ${statusClass}"
+        @click="${() => this._handleTap(train)}"
+        @touchstart="${this._handleTouchStart}"
+        @touchend="${this._handleTouchEnd}"
+        @touchmove="${this._handleTouchMove}"
+      >
+        <div class="row-time">
+          ${formatTime(train.scheduled_departure)}
+        </div>
+
+        <div class="row-expected">
+          ${hasDelay ? formatTime(train.expected_departure) : ''}
+        </div>
+
+        <div class="row-dest">
+          <span class="destination">${this._destination || ''}</span>
+          ${train.is_cancelled ? html`
+            <span class="cancelled-label">Train supprimé</span>
+          ` : ''}
+          ${!train.is_cancelled && callingPoints.length > 0 ? html`
+            <span class="calling-stations">${formatCallingPointsDots(callingPoints)}</span>
+          ` : ''}
+          ${!train.is_cancelled && train.delay_reason ? html`
+            <span class="delay-reason">${train.delay_reason}</span>
+          ` : ''}
+        </div>
+
+        <div class="row-train">
+          ${category ? html`
+            <span class="category">${category}</span>
+          ` : ''}
+          ${number ? html`
+            <span class="number">${number}</span>
+          ` : ''}
+        </div>
+
+        <div class="row-platform">
+          ${train.platform || '—'}
+        </div>
+
+        <div class="row-spacer"></div>
+      </div>
     `;
   }
 
@@ -959,18 +1017,6 @@ class CflCommuteCard extends LitElement {
               { value: 'compact', label: 'Compact View' },
               { value: 'next-only', label: 'Next Train Only' },
               { value: 'board', label: 'Departure Board' }
-            ]
-          }
-        }
-      },
-      {
-        name: 'theme',
-        selector: {
-          select: {
-            options: [
-              { value: 'auto', label: 'Auto (Follow HA Theme)' },
-              { value: 'light', label: 'Light' },
-              { value: 'dark', label: 'Dark' }
             ]
           }
         }

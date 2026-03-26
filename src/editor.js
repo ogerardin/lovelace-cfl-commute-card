@@ -140,19 +140,6 @@ class CflCommuteCardEditor extends LitElement {
 
         <div class="option">
           <ha-select
-            label="Theme"
-            .value=${this._config.theme || 'auto'}
-            @selected=${this._themeChanged}
-            @closed=${(e) => e.stopPropagation()}
-          >
-            <mwc-list-item value="auto">Auto (Follow HA Theme)</mwc-list-item>
-            <mwc-list-item value="light">Light</mwc-list-item>
-            <mwc-list-item value="dark">Dark</mwc-list-item>
-          </ha-select>
-        </div>
-
-        <div class="option">
-          <ha-select
             label="Font Size"
             .value=${this._config.font_size || 'medium'}
             @selected=${this._fontSizeChanged}
@@ -389,14 +376,6 @@ class CflCommuteCardEditor extends LitElement {
       return;
     }
     this._config = { ...this._config, view: ev.target.value };
-    this._fireConfigChanged();
-  }
-
-  _themeChanged(ev) {
-    if (!this._config || !this._hass) {
-      return;
-    }
-    this._config = { ...this._config, theme: ev.target.value };
     this._fireConfigChanged();
   }
 

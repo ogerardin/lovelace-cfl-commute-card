@@ -338,3 +338,60 @@ export function truncateText(text, maxLength) {
   if (!text || text.length <= maxLength) return text;
   return text.substring(0, maxLength - 1) + '…';
 }
+
+/**
+ * Format calling points with bullet separator
+ * @param {Array} points - Array of station names
+ * @param {number} maxPoints - Maximum number of points to display
+ * @returns {string} Formatted calling points string
+ */
+export function formatCallingPointsDots(points, maxPoints = 999) {
+  if (!points || points.length === 0) return '';
+  const display = points.slice(0, maxPoints);
+  const remaining = points.length - maxPoints;
+  let text = display.join(' • ');
+  if (remaining > 0) {
+    text += ` +${remaining}`;
+  }
+  return text;
+}
+
+/**
+ * Get train category from train data (RE, IC, RB, etc.)
+ * @param {Object} train - Train object
+ * @returns {string} Train category
+ */
+export function getTrainCategory(train) {
+  if (!train) return '';
+  if (train.train_category) return train.train_category;
+  if (train.service_type) return train.service_type;
+  if (train.train_number) {
+    const num = String(train.train_number);
+    if (num.startsWith('IC')) return 'IC';
+    if (num.startsWith('RE')) return 'RE';
+    if (num.startsWith('RB')) return 'RB';
+    if (num.startsWith('TER')) return 'TER';
+    if (num.startsWith('TGV')) return 'TGV';
+    if (num.startsWith('ICE')) return 'ICE';
+    if (num.startsWith('RJ')) return 'RJ';
+  }
+  return '';
+}
+
+/**
+ * Get train number (numeric part) from train data
+ * @param {Object} train - Train object
+ * @returns {string} Train number
+ */
+export function getTrainNumber(train) {
+  if (!train) return '';
+  if (train.train_number) {
+    const num = String(train.train_number);
+    return num.replace(/^[A-Z]+/, '');
+  }
+  if (train.train_id) {
+    const match = train.train_id.match(/train[_-]?(\d+)$/i);
+    if (match) return match[1];
+  }
+  return '';
+}

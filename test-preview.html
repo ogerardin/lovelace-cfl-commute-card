@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CFL Commute Card Preview</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
+    }
+    h1 { color: #e6edf3; margin-bottom: 10px; }
+    p { color: #8b949e; margin-top: 0; }
+    .preview-container {
+      max-width: 500px;
+      margin: 20px 0;
+    }
+    .view-selector {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .view-selector button {
+      padding: 10px 16px;
+      cursor: pointer;
+      background: #21262d;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .view-selector button:hover {
+      background: #30363d;
+    }
+    .view-selector button.active {
+      background: #238636;
+      border-color: #238636;
+      color: #fff;
+    }
+    #card-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+  <h1>CFL Commute Card Preview</h1>
+  <p>Open this file directly in a browser to test the card appearance.</p>
+  
+  <div class="view-selector">
+    <button onclick="setView('full')" id="btn-full">Full View</button>
+    <button onclick="setView('compact')" id="btn-compact">Compact View</button>
+    <button onclick="setView('next-only')" id="btn-next-only">Next Only</button>
+    <button onclick="setView('board')" id="btn-board" class="active">Departure Board</button>
+  </div>
+
+  <div id="card-container"></div>
+
+  <script>
+    // Define mock ha-card element
+    class HaCard extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+      connectedCallback() {
+        this.render();
+      }
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: block;
+              background: var(--card-background-color, #fff);
+              border-radius: 12px;
+              overflow: hidden;
+              color: var(--primary-text-color, #212121);
+            }
+          </style>
+          <slot></slot>
+        `;
+      }
+    }
+    customElements.define('ha-card', HaCard);
+
+    // Define mock ha-icon element
+    class HaIcon extends HTMLElement {
+      static get observedAttributes() { return ['icon']; }
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+      connectedCallback() {
+        this.render();
+      }
+      attributeChangedCallback() {
+        this.render();
+      }
+      render() {
+        const icon = this.getAttribute('icon') || 'mdi:help';
+        const size = this.getAttribute('size') || '24';
+        const icons = {
+          'mdi:train': '🚂',
+          'mdi:train-variant': '🚃',
+          'mdi:clock-outline': '🕐',
+          'mdi:alert': '⚠️',
+          'mdi:alert-circle': '⚠️',
+          'mdi:check': '✓',
+          'mdi:close-circle': '✗',
+          'mdi:swap-horizontal': '⇄',
+          'mdi:train-variant': '🚃',
+          'mdi:minus-circle': '⊖'
+        };
+        const displayIcon = icons[icon] || icon.replace('mdi:', '');
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              font-size: ${size}px;
+            }
+          </style>
+          <span>${displayIcon}</span>
+        `;
+      }
+    }
+    customElements.define('ha-icon', HaIcon);
+  </script>
+
+  <script type="module">
+    const mockTrains = [
+      {
+        train_id: 'sensor.luxembourg_kirchberg_train_1',
+        train_number: 'RE 4632',
+        scheduled_departure: '07:42',
+        expected_departure: '07:42',
+        platform: '3',
+        operator: 'CFL',
+        is_cancelled: false,
+        is_no_service: false,
+        delay_minutes: 0,
+        delay_reason: '',
+        calling_points: ['Cents-Hamm', 'Kirchberg', 'Pfaffenberg-Kirchberg', 'Kockelscheuer'],
+        journey_duration: '12'
+      },
+      {
+        train_id: 'sensor.luxembourg_kirchberg_train_2',
+        train_number: 'IC 506',
+        scheduled_departure: '07:56',
+        expected_departure: '08:11',
+        platform: '2',
+        operator: 'CFL',
+        is_cancelled: false,
+        is_no_service: false,
+        delay_minutes: 15,
+        delay_reason: 'Signal failure',
+        calling_points: ['Cents-Hamm', 'Kirchberg', 'Pfaffenberg-Kirchberg'],
+        journey_duration: '18'
+      },
+      {
+        train_id: 'sensor.luxembourg_kirchberg_train_3',
+        train_number: 'RE 4634',
+        scheduled_departure: '08:12',
+        expected_departure: '08:12',
+        platform: '3',
+        operator: 'CFL',
+        is_cancelled: false,
+        is_no_service: false,
+        delay_minutes: 0,
+        delay_reason: '',
+        calling_points: ['Cents-Hamm', 'Kirchberg'],
+        journey_duration: '10'
+      },
+      {
+        train_id: 'sensor.luxembourg_kirchberg_train_4',
+        train_number: 'IC 508',
+        scheduled_departure: '08:26',
+        expected_departure: '08:26',
+        platform: '',
+        operator: 'CFL',
+        is_cancelled: true,
+        is_no_service: false,
+        delay_minutes: 0,
+        delay_reason: '',
+        calling_points: ['Cents-Hamm', 'Kirchberg', 'Pfaffenberg-Kirchberg', 'Kockelscheuer', 'Bonnevoie'],
+        journey_duration: '22'
+      },
+      {
+        train_id: 'sensor.luxembourg_kirchberg_train_5',
+        train_number: 'RB 4636',
+        scheduled_departure: '08:42',
+        expected_departure: '08:57',
+        platform: '1',
+        operator: 'CFL',
+        is_cancelled: false,
+        is_no_service: false,
+        delay_minutes: 15,
+        delay_reason: 'Cause: autre train en panne',
+        calling_points: ['Cents-Hamm', 'Kirchberg', 'Pfaffenberg-Kirchberg', 'Kockelscheuer', 'Bonnevoie', 'Luxembourg'],
+        journey_duration: '25'
+      }
+    ];
+
+    const mockHass = {
+      states: {
+        'sensor.luxembourg_kirchberg_summary': {
+          state: 'on',
+          attributes: {
+            all_trains: mockTrains,
+            origin_name: 'Luxembourg',
+            destination_name: 'Kirchberg',
+            last_updated: new Date().toISOString()
+          },
+          last_updated: new Date().toISOString()
+        }
+      },
+      callService: () => {}
+    };
+
+    let currentView = 'board';
+    const container = document.getElementById('card-container');
+
+    async function renderCard() {
+      container.innerHTML = '';
+      
+      const module = await import('./dist/cfl-commute-card.js');
+      const CflCommuteCard = module.default;
+      
+      const card = new CflCommuteCard();
+      card.setConfig({
+        entity: 'sensor.luxembourg_kirchberg_summary',
+        view: currentView,
+        show_header: true,
+        show_route: true,
+        show_platform: true,
+        show_operator: true,
+        show_calling_points: currentView !== 'board',
+        show_delay_reason: true,
+        show_journey_time: false,
+        font_size: 'medium'
+      });
+      
+      card.hass = mockHass;
+      container.appendChild(card);
+    }
+
+    window.setView = function(view) {
+      currentView = view;
+      document.querySelectorAll('.view-selector button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('btn-' + view).classList.add('active');
+      renderCard();
+    };
+
+    renderCard();
+  </script>
+</body>
+</html>

@@ -271,7 +271,6 @@ export const styles = css`
 
   .delay-reason {
     margin-top: 4px;
-    font-style: italic;
     color: var(--status-minor-delay);
   }
 
@@ -485,95 +484,175 @@ export const styles = css`
     margin-bottom: 8px;
   }
 
-  /* ==================== DEPARTURE BOARD VIEW ==================== */
+  /* ==================== DEPARTURE BOARD VIEW (CFL Station Style) ==================== */
 
   ha-card.departure-board {
-    background: #1a1a1a;
-    color: #ffcc00;
-    font-family: 'Courier New', Courier, monospace;
+    background: #000000;
+    color: #ffffff;
+    font-family: Helvetica, Arial, sans-serif;
   }
 
   .board-header {
-    padding: var(--card-padding);
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-align: center;
-    border-bottom: 2px solid #333;
-    letter-spacing: 2px;
+    display: none;
   }
 
   .board-content {
     padding: 0;
   }
 
-  .board-table {
-    display: table;
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .board-row {
-    display: table-row;
-  }
-
-  .board-row > span {
-    display: table-cell;
-    padding: 8px 12px;
-    border-bottom: 1px solid #333;
-    vertical-align: middle;
-  }
-
   .board-header-row {
-    font-weight: 700;
-    border-bottom: 2px solid #ffcc00;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #010EA0;
+    height: 60px;
+    box-sizing: border-box;
   }
 
-  .board-header-row > span {
-    border-bottom: 2px solid #ffcc00;
-  }
-
-  .board-row:not(.board-header-row) {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-
-  .board-row:not(.board-header-row):hover {
-    background-color: #252525;
-  }
-
-  .col-time {
+  .board-header-row .col-time {
+    font-size: 1.5rem;
+    color: #ffffff;
     width: 20%;
   }
 
-  .col-dest {
-    width: 40%;
-  }
-
-  .col-plat {
-    width: 15%;
+  .board-header-row .col-title {
+    font-size: 1.8rem;
+    color: #ffffff;
     text-align: center;
+    font-weight: 700;
+    letter-spacing: 2px;
+    width: 60%;
   }
 
-  .col-status {
-    width: 25%;
+  .board-header-row .col-logo {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    overflow: visible;
   }
 
-  .board-row.cancelled {
-    opacity: 0.5;
+  .board-header-row .col-logo ha-icon {
+    --mdc-icon-size: 32px;
+    color: #ffffff;
+  }
+
+  .board-header-row .col-logo svg {
+    height: 36px;
+    width: auto;
+    max-width: 100%;
+    display: block;
+  }
+
+  .board-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+    min-height: 60px;
+  }
+
+  .board-row-even {
+    background: #00045A;
+  }
+
+  .board-row-odd {
+    background: #010EA0;
+  }
+
+  .board-row:hover {
+    filter: brightness(1.2);
+  }
+
+  .board-row.cancelled .row-time {
+    color: #ffcc00;
     text-decoration: line-through;
   }
 
-  .board-row.no-service {
-    opacity: 0.5;
+  .board-row.cancelled .cancelled-label {
+    color: #ffcc00;
+    font-size: 1rem;
+    margin-top: 2px;
   }
 
-  .board-row.major-delay .col-status {
-    animation: flash 1s infinite;
+  /* Time column - scheduled */
+  .board-row .row-time {
+    width: 12%;
+    display: flex;
+    align-items: flex-start;
+    font-size: 1.4rem;
+    color: #ffffff;
   }
 
-  @keyframes flash {
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75% { opacity: 0.5; }
+  /* Expected time column */
+  .board-row .row-expected {
+    width: 10%;
+    display: flex;
+    align-items: flex-start;
+    font-size: 1.4rem;
+    color: #ffcc00;
+  }
+
+  /* Destination column */
+  .board-row .row-dest {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-right: 12px;
+  }
+
+  .board-row .row-dest .destination {
+    font-size: 1.4rem;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .board-row .row-dest .calling-stations {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-top: 2px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .board-row .row-dest .delay-reason {
+    font-size: 1rem;
+    color: #ffcc00;
+    margin-top: 2px;
+  }
+
+  /* Train info column */
+  .board-row .row-train {
+    width: 18%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .board-row .row-train .category {
+    font-size: 1.4rem;
+    color: #ffffff;
+  }
+
+  .board-row .row-train .number {
+    font-size: 1rem;
+    color: #ffffff;
+  }
+
+  /* Platform column */
+  .board-row .row-platform {
+    width: 10%;
+    text-align: right;
+    font-size: 1.4rem;
+    color: #ffffff;
+  }
+
+  /* Spacer */
+  .board-row .row-spacer {
+    width: 15%;
   }
 
   /* ==================== FOOTER ==================== */
@@ -754,38 +833,6 @@ export const styles = css`
   ha-card.compact-height .next-train-time {
     font-size: 2rem;
     margin: 8px 0;
-  }
-
-  /* ==================== CUSTOM THEME OVERRIDES ==================== */
-
-  :host([theme="light"]) ha-card {
-    background: #ffffff;
-    color: #212121;
-  }
-
-  :host([theme="dark"]) ha-card {
-    background: #1e1e1e;
-    color: #ffffff;
-  }
-
-  :host([theme="dark"]) .card-header,
-  :host([theme="dark"]) .card-footer {
-    background: #2c2c2c;
-    border-color: #404040;
-  }
-
-  :host([theme="dark"]) .train-row:hover,
-  :host([theme="dark"]) .train-row-compact:hover {
-    background-color: #2c2c2c;
-  }
-
-  :host([theme="dark"]) .train-row,
-  :host([theme="dark"]) .train-row-compact {
-    border-color: #404040;
-  }
-
-  :host([theme="dark"]) .next-train-calling {
-    background: #2c2c2c;
   }
 
   /* ==================== FONT SIZE VARIANTS ==================== */
