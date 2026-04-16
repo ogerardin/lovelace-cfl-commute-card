@@ -15,7 +15,8 @@ import {
   getTrainIcon,
   shouldShowTrains,
   getTrainCategory,
-  getTrainNumber
+  getTrainNumber,
+  normalizePlatform
 } from './utils.js';
 import './editor.js'; // Import editor to bundle it
 
@@ -219,7 +220,8 @@ class CflCommuteCard extends LitElement {
           : String(index + 1);
         return {
           ...train,
-          train_id: `sensor.${baseName}_train_${rawNum}`
+          train_id: `sensor.${baseName}_train_${rawNum}`,
+          platform: normalizePlatform(train.platform)
         };
       });
     } else {
@@ -411,10 +413,12 @@ class CflCommuteCard extends LitElement {
         train_id: entityId,
         scheduled_departure: scheduledDep,
         expected_departure: expectedDep,
-        platform: entity.attributes.platform || entity.attributes.Platform || '',
+        platform: normalizePlatform(entity.attributes.platform || entity.attributes.Platform || ''),
         operator: entity.attributes.operator ||
                  entity.attributes.service_operator ||
                  entity.attributes.Operator || '',
+        direction: entity.attributes.direction ||
+                 entity.attributes.destination || '',
         is_cancelled: entity.attributes.is_cancelled ||
                      entity.attributes.cancelled ||
                      entity.state === 'Cancelled' ||
@@ -624,7 +628,7 @@ class CflCommuteCard extends LitElement {
 
           ${showPlatform ? html`
             <div class="train-platform">
-              Platform ${train.platform || '—'}
+              Platform ${normalizePlatform(train.platform) || '—'}
             </div>
           ` : ''}
 
@@ -677,7 +681,7 @@ class CflCommuteCard extends LitElement {
               @touchmove="${this._handleTouchMove}"
             >
               <span class="time">${formatTime(train.scheduled_departure)}</span>
-              <span class="platform">Plat ${train.platform || '—'}</span>
+              <span class="platform">Plat ${normalizePlatform(train.platform) || '—'}</span>
               <span class="status">
                 ${this.config.status_icons !== false ? html`<span class="status-icon">${getStatusIcon(train)}</span>` : ''}
                 ${train.delay_minutes > 0 ? html`<span class="delay-text">+${train.delay_minutes}m</span>` : ''}
@@ -718,7 +722,7 @@ class CflCommuteCard extends LitElement {
           ` : ''}
 
           <div class="next-train-platform">
-            Platform ${nextTrain.platform || '—'}
+            Platform ${normalizePlatform(nextTrain.platform) || '—'}
           </div>
 
           <div class="next-train-status ${statusClass}">
@@ -794,7 +798,7 @@ class CflCommuteCard extends LitElement {
         </div>
 
         <div class="row-dest">
-          <span class="destination">${this._destination || ''}</span>
+          <span class="destination">${train.direction || this._destination || ''}</span>
           ${train.is_cancelled ? html`
             <span class="cancelled-label">Train supprimé</span>
           ` : ''}
@@ -816,11 +820,10 @@ class CflCommuteCard extends LitElement {
         </div>
 
         <div class="row-platform">
-          ${train.platform || '—'}
+          ${normalizePlatform(train.platform) || '—'}
         </div>
 
-        <div class="row-spacer"></div>
-      </div>
+        </div>
     `;
   }
 
@@ -993,168 +996,7 @@ class CflCommuteCard extends LitElement {
     };
   }
 
-  static getConfigSchema() {
-    return [
-      {
-        name: 'entity',
-        required: true,
-        selector: {
-          entity: {}
-        }
-      },
-      {
-        name: 'title',
-        selector: {
-          text: {}
-        }
-      },
-      {
-        name: 'view',
-        selector: {
-          select: {
-            options: [
-              { value: 'full', label: 'Full View' },
-              { value: 'compact', label: 'Compact View' },
-              { value: 'next-only', label: 'Next Train Only' },
-              { value: 'board', label: 'Departure Board' }
-            ]
-          }
-        }
-      },
-      {
-        name: 'font_size',
-        selector: {
-          select: {
-            options: [
-              { value: 'small', label: 'Small' },
-              { value: 'medium', label: 'Medium' },
-              { value: 'large', label: 'Large' }
-            ]
-          }
-        }
-      },
-      {
-        name: 'show_header',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_route',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_last_updated',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_platform',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_operator',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_calling_points',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_delay_reason',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_journey_time',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_service_type',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'show_animations',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'status_icons',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'compact_height',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'max_calling_points',
-        selector: {
-          number: {
-            min: 1,
-            max: 10,
-            mode: 'box'
-          }
-        }
-      },
-      {
-        name: 'min_delay_to_show',
-        selector: {
-          number: {
-            min: 0,
-            max: 60,
-            mode: 'box'
-          }
-        }
-      },
-      {
-        name: 'hide_on_time_trains',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'only_show_disrupted',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'auto_refresh',
-        selector: {
-          boolean: {}
-        }
-      },
-      {
-        name: 'refresh_interval',
-        selector: {
-          number: {
-            min: 10,
-            max: 300,
-            mode: 'box'
-          }
-        }
-      }
-    ];
-  }
+  
 }
 
 // Register the card

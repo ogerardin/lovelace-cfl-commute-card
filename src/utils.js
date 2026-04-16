@@ -357,6 +357,21 @@ export function formatCallingPointsDots(points, maxPoints = 999) {
 }
 
 /**
+ * Normalize platform value to a string.
+ * The HAFAS API can return platform as either a string ("3") or
+ * an object ({"text": "3", "pos": "N"}).
+ * @param {*} platform - Platform value from API
+ * @returns {string} Normalized platform string
+ */
+export function normalizePlatform(platform) {
+  if (platform == null || platform === '') return '';
+  if (typeof platform === 'object') {
+    return String(platform.text || platform.name || platform.number || JSON.stringify(platform));
+  }
+  return String(platform);
+}
+
+/**
  * Get train category from train data (RE, IC, RB, etc.)
  * @param {Object} train - Train object
  * @returns {string} Train category
