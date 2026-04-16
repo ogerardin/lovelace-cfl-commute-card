@@ -1,0 +1,64 @@
+- generic [active] [ref=e1]:
+  - heading "CFL Commute Card Preview" [level=1] [ref=e2]
+  - paragraph [ref=e3]: Open this file directly in a browser to test the card appearance.
+  - generic [ref=e4]:
+    - button "Full View" [ref=e5] [cursor=pointer]
+    - button "Compact View" [ref=e6] [cursor=pointer]
+    - button "Next Only" [ref=e7] [cursor=pointer]
+    - button "Departure Board" [ref=e8] [cursor=pointer]
+  - generic [ref=e11]:
+    - generic:
+      - generic [ref=e12]:
+        - generic [ref=e13]: 16:33:28
+        - generic [ref=e14]: Départ/Abfahrt
+        - img [ref=e16]
+      - generic [ref=e21]:
+        - generic [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: 07:42
+          - generic [ref=e24]:
+            - generic [ref=e25]: Kirchberg
+            - generic [ref=e26]: Cents-Hamm • Kirchberg • Pfaffenberg-Kirchberg • Kockelscheuer
+          - generic [ref=e27]:
+            - generic [ref=e28]: RE
+            - generic [ref=e29]: "4632"
+          - generic [ref=e30]: "3"
+        - generic [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: 07:56
+          - generic [ref=e33]: 08:11
+          - generic [ref=e34]:
+            - generic [ref=e35]: Kirchberg
+            - generic [ref=e36]: Cents-Hamm • Kirchberg • Pfaffenberg-Kirchberg
+            - generic [ref=e37]: Signal failure
+          - generic [ref=e38]:
+            - generic [ref=e39]: IC
+            - generic [ref=e40]: "506"
+          - generic [ref=e41]: "2"
+        - generic [ref=e42] [cursor=pointer]:
+          - generic [ref=e43]: 08:12
+          - generic [ref=e44]:
+            - generic [ref=e45]: Kirchberg
+            - generic [ref=e46]: Cents-Hamm • Kirchberg
+          - generic [ref=e47]:
+            - generic [ref=e48]: RE
+            - generic [ref=e49]: "4634"
+          - generic [ref=e50]: "3"
+        - generic [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: 08:26
+          - generic [ref=e53]:
+            - generic [ref=e54]: Kirchberg
+            - generic [ref=e55]: Train supprimé
+          - generic [ref=e56]:
+            - generic [ref=e57]: IC
+            - generic [ref=e58]: "508"
+          - generic [ref=e59]: —
+        - generic [ref=e60] [cursor=pointer]:
+          - generic [ref=e61]: 08:42
+          - generic [ref=e62]: 08:57
+          - generic [ref=e63]:
+            - generic [ref=e64]: Kirchberg
+            - generic [ref=e65]: Cents-Hamm • Kirchberg • Pfaffenberg-Kirchberg • Kockelscheuer • Bonnevoie • Luxembourg
+            - generic [ref=e66]: "Cause: autre train en panne"
+          - generic [ref=e67]:
+            - generic [ref=e68]: RB
+            - generic [ref=e69]: "4636"
+          - generic [ref=e70]: "1"
