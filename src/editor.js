@@ -35,8 +35,7 @@ class CflCommuteCardEditor extends LitElement {
         margin-top: 0;
       }
 
-      ha-textfield,
-      ha-select {
+      ha-textfield {
         width: 100%;
       }
 
@@ -56,6 +55,61 @@ class CflCommuteCardEditor extends LitElement {
         color: var(--secondary-text-color);
         margin-top: 4px;
       }
+
+      .native-select-label {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--secondary-text-color);
+        margin-bottom: 4px;
+      }
+
+      .native-select-container {
+        position: relative;
+        width: 100%;
+      }
+
+      .native-select-container select {
+        width: 100%;
+        height: 56px;
+        padding: 0 36px 0 16px;
+        border: 1px solid var(--divider-color, rgba(0,0,0,0.38));
+        border-radius: 4px;
+        background: transparent;
+        color: var(--primary-text-color);
+        font-size: 1rem;
+        font-family: inherit;
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+      }
+
+      .native-select-container select:hover {
+        border-color: var(--primary-text-color);
+      }
+
+      .native-select-container select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        border-width: 2px;
+        padding: 0 35px 0 15px;
+      }
+
+      .native-select-container::after {
+        content: '';
+        position: absolute;
+        right: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid var(--secondary-text-color, rgba(0,0,0,0.54));
+        pointer-events: none;
+      }
+
+      
     `;
   }
 
@@ -124,31 +178,27 @@ class CflCommuteCardEditor extends LitElement {
         <div class="section-header">View & Display</div>
 
         <div class="option">
-          <ha-select
-            label="View Mode"
-            .value=${this._config.view || 'full'}
-            @selected=${this._viewChanged}
-            @closed=${(e) => e.stopPropagation()}
-          >
-            <mwc-list-item value="full">Full View</mwc-list-item>
-            <mwc-list-item value="compact">Compact View</mwc-list-item>
-            <mwc-list-item value="next-only">Next Train Only</mwc-list-item>
-            <mwc-list-item value="board">Departure Board</mwc-list-item>
-          </ha-select>
+          <span class="native-select-label">View Mode</span>
+          <div class="native-select-container">
+            <select @change=${this._viewChanged}>
+              <option value="full" ?selected=${(this._config.view || 'full') === 'full'}>Full View</option>
+              <option value="compact" ?selected=${(this._config.view || 'full') === 'compact'}>Compact View</option>
+              <option value="next-only" ?selected=${(this._config.view || 'full') === 'next-only'}>Next Train Only</option>
+              <option value="board" ?selected=${(this._config.view || 'full') === 'board'}>Departure Board</option>
+            </select>
+          </div>
           <div class="info">Choose how to display train information</div>
         </div>
 
         <div class="option">
-          <ha-select
-            label="Font Size"
-            .value=${this._config.font_size || 'medium'}
-            @selected=${this._fontSizeChanged}
-            @closed=${(e) => e.stopPropagation()}
-          >
-            <mwc-list-item value="small">Small</mwc-list-item>
-            <mwc-list-item value="medium">Medium</mwc-list-item>
-            <mwc-list-item value="large">Large</mwc-list-item>
-          </ha-select>
+          <span class="native-select-label">Font Size</span>
+          <div class="native-select-container">
+            <select @change=${this._fontSizeChanged}>
+              <option value="small" ?selected=${(this._config.font_size || 'medium') === 'small'}>Small</option>
+              <option value="medium" ?selected=${(this._config.font_size || 'medium') === 'medium'}>Medium</option>
+              <option value="large" ?selected=${(this._config.font_size || 'medium') === 'large'}>Large</option>
+            </select>
+          </div>
         </div>
 
         <!-- Display Options -->
@@ -306,17 +356,15 @@ class CflCommuteCardEditor extends LitElement {
         <div class="section-header">Interaction</div>
 
         <div class="option">
-          <ha-select
-            label="Tap Action"
-            .value=${this._config.tap_action?.action || 'more-info'}
-            @selected=${this._tapActionChanged}
-            @closed=${(e) => e.stopPropagation()}
-          >
-            <mwc-list-item value="more-info">Show More Info</mwc-list-item>
-            <mwc-list-item value="url">Open URL</mwc-list-item>
-            <mwc-list-item value="navigate">Navigate</mwc-list-item>
-            <mwc-list-item value="none">None</mwc-list-item>
-          </ha-select>
+          <span class="native-select-label">Tap Action</span>
+          <div class="native-select-container">
+            <select @change=${this._tapActionChanged}>
+              <option value="more-info" ?selected=${(this._config.tap_action?.action || 'more-info') === 'more-info'}>Show More Info</option>
+              <option value="url" ?selected=${(this._config.tap_action?.action || 'more-info') === 'url'}>Open URL</option>
+              <option value="navigate" ?selected=${(this._config.tap_action?.action || 'more-info') === 'navigate'}>Navigate</option>
+              <option value="none" ?selected=${(this._config.tap_action?.action || 'more-info') === 'none'}>None</option>
+            </select>
+          </div>
         </div>
 
         ${this._config.tap_action?.action === 'url' ? html`
@@ -340,16 +388,14 @@ class CflCommuteCardEditor extends LitElement {
         ` : ''}
 
         <div class="option">
-          <ha-select
-            label="Hold Action"
-            .value=${this._config.hold_action?.action || 'refresh'}
-            @selected=${this._holdActionChanged}
-            @closed=${(e) => e.stopPropagation()}
-          >
-            <mwc-list-item value="refresh">Refresh Data</mwc-list-item>
-            <mwc-list-item value="more-info">Show More Info</mwc-list-item>
-            <mwc-list-item value="none">None</mwc-list-item>
-          </ha-select>
+          <span class="native-select-label">Hold Action</span>
+          <div class="native-select-container">
+            <select @change=${this._holdActionChanged}>
+              <option value="refresh" ?selected=${(this._config.hold_action?.action || 'refresh') === 'refresh'}>Refresh Data</option>
+              <option value="more-info" ?selected=${(this._config.hold_action?.action || 'refresh') === 'more-info'}>Show More Info</option>
+              <option value="none" ?selected=${(this._config.hold_action?.action || 'refresh') === 'none'}>None</option>
+            </select>
+          </div>
         </div>
       </div>
     `;
