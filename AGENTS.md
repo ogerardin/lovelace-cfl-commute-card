@@ -198,3 +198,13 @@ fix: handle missing train data gracefully
 docs: update README with new examples
 refactor: extract disruption detection logic
 ```
+
+## Version Tags
+
+Use plain version numbers (no "v" prefix) for git tags:
+- **Correct:** `2.0.0`
+- **Incorrect:** `v2.0.0`, `V2.0.0`
+
+Release titles should be: `Release X.Y.Z`
+
+Note: Older tags with `v` or `V` prefixes exist from the upstream repo before the fork and should not be emulated.

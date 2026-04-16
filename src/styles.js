@@ -1,8 +1,5 @@
 import { css } from 'lit';
 
-/**
- * Styles for CFL Commute Card
- */
 export const styles = css`
   :host {
     --status-on-time: var(--custom-on-time-color, #4caf50);
@@ -195,305 +192,12 @@ export const styles = css`
     padding: 0;
   }
 
-  /* ==================== FULL VIEW ==================== */
-
-  .train-row {
-    padding: var(--row-padding) var(--card-padding);
-    border-bottom: 1px solid var(--divider-color, #e0e0e0);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-
-  .train-row:hover {
-    background-color: var(--secondary-background-color, #f5f5f5);
-  }
-
-  .train-row:last-child {
-    border-bottom: none;
-  }
-
-  .train-main {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 4px;
-  }
-
-  .train-time {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 0 0 auto;
-  }
-
-  .train-time ha-icon {
-    --mdc-icon-size: 20px;
-    color: var(--secondary-text-color, #757575);
-  }
-
-  .time {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--primary-text-color, #212121);
-  }
-
-  .expected-time {
-    font-size: 1rem;
-    color: var(--status-minor-delay);
-    margin-left: 4px;
-    min-width: 3.5rem;
-  }
-
-  .train-platform {
-    font-size: 0.9rem;
-    color: var(--secondary-text-color, #757575);
-    flex: 0 0 auto;
-  }
-
-  .train-status {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .train-details {
-    margin-left: 32px;
-    font-size: 0.85rem;
-    color: var(--secondary-text-color, #757575);
-  }
-
-  .operator {
-    font-weight: 500;
-  }
-
-  .delay-reason {
-    margin-top: 4px;
-    color: var(--status-minor-delay);
-  }
-
-  .calling-points {
-    margin-top: 4px;
-  }
-
-  .journey-time {
-    margin-top: 4px;
-    font-size: 0.8rem;
-  }
-
-  /* ==================== STATUS COLORS ==================== */
-
-  .train-row.on-time .train-status {
-    color: var(--status-on-time);
-  }
-
-  .train-row.minor-delay .train-status {
-    color: var(--status-minor-delay);
-  }
-
-  .train-row.major-delay .train-status {
-    color: var(--status-major-delay);
-  }
-
-  .train-row.cancelled {
-    opacity: 0.6;
-  }
-
-  .train-row.cancelled .train-status {
-    color: var(--status-cancelled);
-  }
-
-  .train-row.cancelled .time {
-    text-decoration: line-through;
-  }
-
-  .train-row.no-service {
-    opacity: 0.6;
-  }
-
-  .train-row.no-service .train-status {
-    color: var(--status-no-service);
-  }
-
-  /* ==================== COMPACT VIEW ==================== */
-
-  .card-content.compact {
-    padding: 8px 0;
-  }
-
-  .train-row-compact {
-    display: grid;
-    grid-template-columns: 60px 1fr 70px;
-    align-items: center;
-    padding: 8px var(--card-padding);
-    border-bottom: 1px solid var(--divider-color, #e0e0e0);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-
-  .train-row-compact:hover {
-    background-color: var(--secondary-background-color, #f5f5f5);
-  }
-
-  .train-row-compact:last-child {
-    border-bottom: none;
-  }
-
-  .train-row-compact .time {
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-
-  .train-row-compact .platform {
-    font-size: 0.9rem;
-    color: var(--secondary-text-color, #757575);
-    text-align: center;
-  }
-
-  .train-row-compact .status {
-    font-size: 0.9rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 4px;
-  }
-
-  .train-row-compact .status .status-icon {
-    display: flex;
-    align-items: center;
-    line-height: 1;
-  }
-
-  .train-row-compact .status .delay-text {
-    display: flex;
-    align-items: center;
-    line-height: 1;
-  }
-
-  .train-row-compact.on-time .status {
-    color: var(--status-on-time);
-  }
-
-  .train-row-compact.minor-delay .status {
-    color: var(--status-minor-delay);
-  }
-
-  .train-row-compact.major-delay .status {
-    color: var(--status-major-delay);
-  }
-
-  .train-row-compact.cancelled .status {
-    color: var(--status-cancelled);
-  }
-
-  .train-row-compact.cancelled .time {
-    text-decoration: line-through;
-    opacity: 0.6;
-  }
-
-  .train-row-compact.no-service .status {
-    color: var(--status-no-service);
-  }
-
-  .train-row-compact.no-service .time {
-    opacity: 0.6;
-  }
-
-  /* ==================== NEXT-ONLY VIEW ==================== */
-
-  .card-content.next-only {
-    padding: var(--card-padding);
-    text-align: center;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .next-train-time {
-    font-size: 3rem;
-    font-weight: 700;
-    margin: 16px 0;
-    color: var(--primary-text-color, #212121);
-  }
-
-  .next-train-expected {
-    font-size: 1rem;
-    color: var(--status-minor-delay);
-    margin-bottom: 16px;
-  }
-
-  .next-train-platform {
-    font-size: 1.3rem;
-    font-weight: 500;
-    margin: 12px 0;
-    color: var(--primary-text-color, #212121);
-  }
-
-  .next-train-status {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin: 12px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .next-train-status.on-time {
-    color: var(--status-on-time);
-  }
-
-  .next-train-status.minor-delay {
-    color: var(--status-minor-delay);
-  }
-
-  .next-train-status.major-delay {
-    color: var(--status-major-delay);
-  }
-
-  .next-train-status.cancelled {
-    color: var(--status-cancelled);
-  }
-
-  .next-train-status.no-service {
-    color: var(--status-no-service);
-  }
-
-  .next-train-operator {
-    font-size: 1rem;
-    color: var(--secondary-text-color, #757575);
-    margin: 12px 0;
-  }
-
-  .next-train-calling {
-    margin-top: 16px;
-    font-size: 0.9rem;
-    text-align: left;
-    padding: 12px;
-    background: var(--secondary-background-color, #f5f5f5);
-    border-radius: var(--border-radius);
-    color: var(--primary-text-color, #212121);
-  }
-
-  .next-train-calling strong {
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  /* ==================== DEPARTURE BOARD VIEW (CFL Station Style) ==================== */
+  /* ==================== DEPARTURE BOARD VIEW ==================== */
 
   ha-card.departure-board {
     background: #000000;
     color: #ffffff;
     font-family: Helvetica, Arial, sans-serif;
-  }
-
-  .board-header {
-    display: none;
   }
 
   .board-content {
@@ -578,7 +282,6 @@ export const styles = css`
     margin-top: 2px;
   }
 
-  /* Time column - scheduled */
   .board-row .row-time {
     width: 10%;
     display: flex;
@@ -587,7 +290,6 @@ export const styles = css`
     color: #ffffff;
   }
 
-  /* Expected time column */
   .board-row .row-expected {
     width: 7%;
     display: flex;
@@ -596,7 +298,6 @@ export const styles = css`
     color: #ffcc00;
   }
 
-  /* Destination column */
   .board-row .row-dest {
     width: 65%;
     display: flex;
@@ -625,7 +326,6 @@ export const styles = css`
     margin-top: 2px;
   }
 
-  /* Train info column */
   .board-row .row-train {
     width: 10%;
     display: flex;
@@ -642,25 +342,11 @@ export const styles = css`
     color: #ffffff;
   }
 
-  /* Platform column */
   .board-row .row-platform {
     width: 8%;
     text-align: right;
     font-size: 1.4rem;
     color: #ffffff;
-  }
-
-  
-
-  /* ==================== FOOTER ==================== */
-
-  .card-footer {
-    padding: 8px var(--card-padding);
-    border-top: 1px solid var(--divider-color, #e0e0e0);
-    font-size: 0.8rem;
-    color: var(--secondary-text-color, #757575);
-    text-align: center;
-    background: var(--card-background-color, #fff);
   }
 
   /* ==================== EMPTY STATE ==================== */
@@ -739,8 +425,6 @@ export const styles = css`
     100% { opacity: 0; }
   }
 
-  /* ==================== ANIMATIONS ==================== */
-
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -752,12 +436,6 @@ export const styles = css`
     }
   }
 
-  .train-row,
-  .train-row-compact {
-    animation: slideIn 0.3s ease-out;
-  }
-
-  /* Disable animations if user prefers reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -768,99 +446,10 @@ export const styles = css`
     }
   }
 
-  /* ==================== RESPONSIVE ==================== */
-
   @media (max-width: 600px) {
-    .train-main {
-      flex-wrap: wrap;
-    }
-
-    .time {
-      font-size: 1.3rem;
-    }
-
-    .next-train-time {
-      font-size: 2.5rem;
-    }
-
     .board-row > span {
       padding: 6px 8px;
       font-size: 0.85rem;
     }
-
-    .col-dest {
-      width: 35%;
-    }
-
-    .col-status {
-      width: 30%;
-    }
-  }
-
-  @media (max-width: 400px) {
-    .train-platform {
-      flex-basis: 100%;
-      margin-left: 32px;
-    }
-
-    .card-padding {
-      --card-padding: 12px;
-    }
-  }
-
-  /* ==================== COMPACT HEIGHT MODE ==================== */
-
-  ha-card.compact-height .train-row {
-    padding: 8px var(--card-padding);
-  }
-
-  ha-card.compact-height .train-main {
-    margin-bottom: 0;
-  }
-
-  ha-card.compact-height .train-details {
-    display: none;
-  }
-
-  ha-card.compact-height .card-content.next-only {
-    min-height: 150px;
-    padding: 12px;
-  }
-
-  ha-card.compact-height .next-train-time {
-    font-size: 2rem;
-    margin: 8px 0;
-  }
-
-  /* ==================== FONT SIZE VARIANTS ==================== */
-
-  :host([font-size="small"]) .time {
-    font-size: 1.2rem;
-  }
-
-  :host([font-size="small"]) .next-train-time {
-    font-size: 2.5rem;
-  }
-
-  :host([font-size="large"]) .time {
-    font-size: 1.8rem;
-  }
-
-  :host([font-size="large"]) .next-train-time {
-    font-size: 3.5rem;
-  }
-
-  :host([font-size="large"]) .train-details,
-  :host([font-size="large"]) .operator {
-    font-size: 1rem;
-  }
-
-  /* ==================== NO ANIMATIONS MODE ==================== */
-
-  :host([no-animations]) .train-row,
-  :host([no-animations]) .train-row-compact,
-  :host([no-animations]) * {
-    animation: none !important;
-    transition: none !important;
   }
 `;

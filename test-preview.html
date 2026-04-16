@@ -19,30 +19,6 @@
       max-width: 500px;
       margin: 20px 0;
     }
-    .view-selector {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .view-selector button {
-      padding: 10px 16px;
-      cursor: pointer;
-      background: #21262d;
-      color: #c9d1d9;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-    .view-selector button:hover {
-      background: #30363d;
-    }
-    .view-selector button.active {
-      background: #238636;
-      border-color: #238636;
-      color: #fff;
-    }
     #card-container {
       border-radius: 12px;
       overflow: hidden;
@@ -52,19 +28,11 @@
 </head>
 <body>
   <h1>CFL Commute Card Preview</h1>
-  <p>Open this file directly in a browser to test the card appearance.</p>
-  
-  <div class="view-selector">
-    <button onclick="setView('full')" id="btn-full">Full View</button>
-    <button onclick="setView('compact')" id="btn-compact">Compact View</button>
-    <button onclick="setView('next-only')" id="btn-next-only">Next Only</button>
-    <button onclick="setView('board')" id="btn-board" class="active">Departure Board</button>
-  </div>
+  <p>Open this file directly in a browser to test the departure board appearance.</p>
 
   <div id="card-container"></div>
 
   <script>
-    // Define mock ha-card element
     class HaCard extends HTMLElement {
       constructor() {
         super();
@@ -90,7 +58,6 @@
     }
     customElements.define('ha-card', HaCard);
 
-    // Define mock ha-icon element
     class HaIcon extends HTMLElement {
       static get observedAttributes() { return ['icon']; }
       constructor() {
@@ -115,7 +82,6 @@
           'mdi:check': '✓',
           'mdi:close-circle': '✗',
           'mdi:swap-horizontal': '⇄',
-          'mdi:train-variant': '🚃',
           'mdi:minus-circle': '⊖'
         };
         const displayIcon = icons[icon] || icon.replace('mdi:', '');
@@ -225,39 +191,22 @@
       callService: () => {}
     };
 
-    let currentView = 'board';
     const container = document.getElementById('card-container');
 
     async function renderCard() {
       container.innerHTML = '';
-      
+
       const module = await import('./dist/cfl-commute-card.js');
       const CflCommuteCard = module.default;
-      
+
       const card = new CflCommuteCard();
       card.setConfig({
-        entity: 'sensor.luxembourg_kirchberg_summary',
-        view: currentView,
-        show_header: true,
-        show_route: true,
-        show_platform: true,
-        show_operator: true,
-        show_calling_points: currentView !== 'board',
-        show_delay_reason: true,
-        show_journey_time: false,
-        font_size: 'medium'
+        entity: 'sensor.luxembourg_kirchberg_summary'
       });
-      
+
       card.hass = mockHass;
       container.appendChild(card);
     }
-
-    window.setView = function(view) {
-      currentView = view;
-      document.querySelectorAll('.view-selector button').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('btn-' + view).classList.add('active');
-      renderCard();
-    };
 
     renderCard();
   </script>
