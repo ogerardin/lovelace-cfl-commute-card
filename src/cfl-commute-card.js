@@ -15,8 +15,7 @@ import {
   getTrainIcon,
   shouldShowTrains,
   getTrainCategory,
-  getTrainNumber,
-  normalizePlatform
+  getTrainNumber
 } from './utils.js';
 import './editor.js'; // Import editor to bundle it
 
@@ -221,7 +220,7 @@ class CflCommuteCard extends LitElement {
         return {
           ...train,
           train_id: `sensor.${baseName}_train_${rawNum}`,
-          platform: normalizePlatform(train.platform)
+          platform: train.platform || ''
         };
       });
     } else {
@@ -413,7 +412,7 @@ class CflCommuteCard extends LitElement {
         train_id: entityId,
         scheduled_departure: scheduledDep,
         expected_departure: expectedDep,
-        platform: normalizePlatform(entity.attributes.platform || entity.attributes.Platform || ''),
+        platform: entity.attributes.platform || entity.attributes.Platform || '',
         operator: entity.attributes.operator ||
                  entity.attributes.service_operator ||
                  entity.attributes.Operator || '',
@@ -628,7 +627,7 @@ class CflCommuteCard extends LitElement {
 
           ${showPlatform ? html`
             <div class="train-platform">
-              Platform ${normalizePlatform(train.platform) || '—'}
+              Platform ${train.platform || '—'}
             </div>
           ` : ''}
 
@@ -681,7 +680,7 @@ class CflCommuteCard extends LitElement {
               @touchmove="${this._handleTouchMove}"
             >
               <span class="time">${formatTime(train.scheduled_departure)}</span>
-              <span class="platform">Plat ${normalizePlatform(train.platform) || '—'}</span>
+              <span class="platform">Plat ${train.platform || '—'}</span>
               <span class="status">
                 ${this.config.status_icons !== false ? html`<span class="status-icon">${getStatusIcon(train)}</span>` : ''}
                 ${train.delay_minutes > 0 ? html`<span class="delay-text">+${train.delay_minutes}m</span>` : ''}
@@ -722,7 +721,7 @@ class CflCommuteCard extends LitElement {
           ` : ''}
 
           <div class="next-train-platform">
-            Platform ${normalizePlatform(nextTrain.platform) || '—'}
+            Platform ${nextTrain.platform || '—'}
           </div>
 
           <div class="next-train-status ${statusClass}">
@@ -820,7 +819,7 @@ class CflCommuteCard extends LitElement {
         </div>
 
         <div class="row-platform">
-          ${normalizePlatform(train.platform) || '—'}
+          ${train.platform || '—'}
         </div>
 
         </div>
