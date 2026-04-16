@@ -580,7 +580,7 @@ export const styles = css`
 
   /* Time column - scheduled */
   .board-row .row-time {
-    width: 12%;
+    width: 10%;
     display: flex;
     align-items: flex-start;
     font-size: 1.4rem;
@@ -589,7 +589,7 @@ export const styles = css`
 
   /* Expected time column */
   .board-row .row-expected {
-    width: 10%;
+    width: 7%;
     display: flex;
     align-items: flex-start;
     font-size: 1.4rem;
@@ -598,7 +598,7 @@ export const styles = css`
 
   /* Destination column */
   .board-row .row-dest {
-    width: 35%;
+    width: 65%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -627,7 +627,7 @@ export const styles = css`
 
   /* Train info column */
   .board-row .row-train {
-    width: 18%;
+    width: 10%;
     display: flex;
     flex-direction: column;
   }
@@ -644,16 +644,13 @@ export const styles = css`
 
   /* Platform column */
   .board-row .row-platform {
-    width: 10%;
+    width: 8%;
     text-align: right;
     font-size: 1.4rem;
     color: #ffffff;
   }
 
-  /* Spacer */
-  .board-row .row-spacer {
-    width: 15%;
-  }
+  
 
   /* ==================== FOOTER ==================== */
 
