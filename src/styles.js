@@ -151,39 +151,40 @@ export const styles = css`
   }
 
   ha-card.departure-board .disruption-banner {
-    background: #b71c1c;
-    color: #ffcc00;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #ffcc00;
+    color: #000000;
+    font-size: 0.9rem;
     font-family: 'Courier New', Courier, monospace;
     letter-spacing: 1px;
-    border-left-color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: filter 0.15s ease;
   }
 
-  ha-card.departure-board .disruption-banner.disruption-minor {
-    background: #e65100;
-    color: #ffcc00;
+  ha-card.departure-board .disruption-banner:hover {
+    filter: brightness(0.9);
   }
 
-  ha-card.departure-board .disruption-banner.disruption-major {
-    background: #bf360c;
-    color: #ffcc00;
+  ha-card.departure-board .disruption-banner .disruption-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
-  ha-card.departure-board .disruption-banner.disruption-severe {
-    background: #b71c1c;
-    color: #ffcc00;
+  ha-card.departure-board .disruption-banner .disruption-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
   }
 
-  ha-card.departure-board .disruption-banner.disruption-critical {
-    background: #4a0000;
-    color: #ffcc00;
-  }
-
-  ha-card.departure-board .disruption-icon {
-    color: #ffcc00;
-  }
-
-  ha-card.departure-board .disruption-chevron {
-    color: rgba(255, 204, 0, 0.7);
+  ha-card.departure-board .disruption-banner .disruption-message {
+    font-size: 0.82rem;
+    font-weight: 400;
   }
 
   /* ==================== CONTENT ==================== */

@@ -435,31 +435,28 @@ class CflCommuteCard extends LitElement {
   _renderDisruptionBanner() {
     if (!this._hasDisruption) return '';
 
-    const severityMap = {
-      minor:    { cls: 'disruption-minor',    label: 'Minor Delays',        icon: 'mdi:alert' },
-      major:    { cls: 'disruption-major',    label: 'Major Delays',        icon: 'mdi:alert' },
-      severe:   { cls: 'disruption-severe',   label: 'Severe Disruption',   icon: 'mdi:alert-circle' },
-      critical: { cls: 'disruption-critical', label: 'Critical Disruption', icon: 'mdi:alert-octagon' },
+    const severityLabels = {
+      minor:    '',
+      major:    '',
+      severe:   'Perturbations importantes',
+      critical: 'PERTURBATIONS MAJEURES',
     };
-    const { cls, label, icon } = severityMap[this._disruptionSeverity] || severityMap.minor;
-    const hasClickTarget = !!this._resolvedStatusEntityId;
+    const label = severityLabels[this._disruptionSeverity] || '';
 
     return html`
       <div
-        class="disruption-banner ${cls} ${hasClickTarget ? 'disruption-clickable' : ''}"
-        @click="${hasClickTarget ? () => this._showDisruptionMoreInfo() : null}"
-        role="${hasClickTarget ? 'button' : 'alert'}"
+        class="disruption-banner"
+        @click="${() => this._showDisruptionMoreInfo()}"
+        role="button"
       >
-        <ha-icon icon="${icon}" class="disruption-icon"></ha-icon>
         <div class="disruption-content">
-          <span class="disruption-label">${label} on this route</span>
+          ${label ? html`
+            <span class="disruption-label">${label}</span>
+          ` : ''}
           ${this._disruptionMessage ? html`
             <span class="disruption-message">${this._disruptionMessage}</span>
           ` : ''}
         </div>
-        ${hasClickTarget ? html`
-          <ha-icon icon="mdi:chevron-right" class="disruption-chevron"></ha-icon>
-        ` : ''}
       </div>
     `;
   }
@@ -490,11 +487,12 @@ class CflCommuteCard extends LitElement {
             </svg>
           </span>
         </div>
-        ${this._renderDisruptionBanner()}
 
         <div class="board-content">
           ${this._trains.map((train, index) => this._renderBoardRow(train, index))}
         </div>
+
+        ${this._renderDisruptionBanner()}
       </ha-card>
     `;
   }
