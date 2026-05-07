@@ -173,6 +173,15 @@ class CflCommuteCardEditor extends LitElement {
           <div class="info">Sensor for disruption banner. Expected states: Normal, Minor Delays, Major Delays, Severe Disruption, Critical. Auto-discovered if not set.</div>
         </div>
 
+        <div class="switches">
+          <ha-formfield label="Show Route">
+            <ha-switch
+              .checked=${this._config.show_route !== false}
+              @change=${this._toggleChanged('show_route')}
+            ></ha-switch>
+          </ha-formfield>
+        </div>
+
         <div class="section-header">Filtering</div>
 
         <div class="switches">
