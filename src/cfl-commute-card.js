@@ -1,4 +1,5 @@
 import { LitElement, html } from 'lit';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { styles } from './styles.js';
 import {
   formatTime,
@@ -612,7 +613,7 @@ class CflCommuteCard extends LitElement {
             <div class="calling-points-zone">
               <div class="calling-points-scroll" style="transform: translateY(0px)">
                 ${callingPoints.length > 0
-                  ? html`${formatCallingPointsLines(callingPoints)}`
+                  ? unsafeHTML(formatCallingPointsLines(callingPoints))
                   : html`<span style="visibility:hidden">—</span>`}
               </div>
             </div>
