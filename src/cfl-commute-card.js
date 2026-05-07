@@ -4,6 +4,7 @@ import {
   formatTime,
   getStatusClass,
   formatCallingPointsDots,
+  formatCallingPointsLines,
   filterTrains,
   sortTrains,
   shouldShowTrains,
@@ -13,10 +14,63 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.1.2 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.2.0 ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
+
+const CALLING_POINTS_LINE_HEIGHT = 14
+const CALLING_POINTS_VISIBLE_LINES = 3
+
+class Cycler {
+  constructor(el, pauseMs) {
+    this.el = el
+    this.pauseMs = pauseMs
+    this.line = 0
+    this.timers = []
+    this.alive = false
+  }
+
+  start() {
+    this.alive = true
+    this.line = 0
+    const totalLines = Math.ceil(this.el.scrollHeight / CALLING_POINTS_LINE_HEIGHT)
+    const maxLine = totalLines - CALLING_POINTS_VISIBLE_LINES
+    if (maxLine <= 0) return
+
+    this.el.style.transition = 'none'
+    this.el.style.transform = 'translateY(0px)'
+
+    const pause = () => {
+      if (!this.alive) return
+      this.el.style.transition = 'none'
+      this.el.style.transform = `translateY(-${this.line * CALLING_POINTS_LINE_HEIGHT}px)`
+
+      const t = setTimeout(() => {
+        if (!this.alive) return
+        this.line++
+        if (this.line > maxLine) this.line = 0
+
+        this.el.style.transition = 'transform 1000ms ease'
+        this.el.style.transform = `translateY(-${this.line * CALLING_POINTS_LINE_HEIGHT}px)`
+
+        const t2 = setTimeout(pause, 1050)
+        this.timers.push(t2)
+      }, this.pauseMs)
+      this.timers.push(t)
+    }
+
+    pause()
+  }
+
+  stop() {
+    this.alive = false
+    this.timers.forEach(t => clearTimeout(t))
+    this.timers = []
+    this.el.style.transition = 'none'
+    this.el.style.transform = 'translateY(0px)'
+  }
+}
 
 class CflCommuteCard extends LitElement {
   static get properties() {
@@ -58,6 +112,7 @@ class CflCommuteCard extends LitElement {
     this._returnEntityCacheKey = null;
     this._currentTime = this._getCurrentTime();
     this._timeInterval = null;
+    this._callingPointsCyclers = []
   }
 
   _getCurrentTime() {
@@ -85,6 +140,29 @@ class CflCommuteCard extends LitElement {
       clearTimeout(this._toastTimer);
       this._toastTimer = null;
     }
+    this._callingPointsCyclers.forEach(c => c.stop())
+    this._callingPointsCyclers = []
+  }
+
+  updated(changedProps) {
+    super.updated && super.updated(changedProps)
+    this._manageCallingPointCyclers()
+  }
+
+  _manageCallingPointCyclers() {
+    this._callingPointsCyclers.forEach(c => c.stop())
+    this._callingPointsCyclers = []
+
+    if (!this._trains || this._trains.length === 0) return
+
+    const interval = this.config.calling_points_scroll_interval || 5000
+    const scrolls = this.shadowRoot.querySelectorAll('.calling-points-scroll')
+    scrolls.forEach(el => {
+      if (el.scrollHeight <= el.clientHeight) return
+      const cycler = new Cycler(el, interval)
+      cycler.start()
+      this._callingPointsCyclers.push(cycler)
+    })
   }
 
   setConfig(config) {
@@ -101,6 +179,7 @@ class CflCommuteCard extends LitElement {
       min_delay_to_show: 0,
       auto_refresh: true,
       refresh_interval: 60,
+      calling_points_scroll_interval: 5000,
       ...config
     };
 
@@ -528,9 +607,17 @@ class CflCommuteCard extends LitElement {
           ${train.is_cancelled ? html`
             <span class="cancelled-label">Train supprimé</span>
           ` : ''}
-          ${!train.is_cancelled && callingPoints.length > 0 ? html`
-            <span class="calling-stations">${formatCallingPointsDots(callingPoints)}</span>
-          ` : ''}
+          ${!train.is_cancelled ? html`
+            <div class="calling-points-zone">
+              <div class="calling-points-scroll" style="transform: translateY(0px)">
+                ${callingPoints.length > 0
+                  ? html`${formatCallingPointsLines(callingPoints)}`
+                  : html`<span style="visibility:hidden">—</span>`}
+              </div>
+            </div>
+          ` : html`
+            <div class="calling-points-zone"></div>
+          `}
           ${!train.is_cancelled && train.delay_reason ? html`
             <span class="delay-reason">${train.delay_reason}</span>
           ` : ''}
