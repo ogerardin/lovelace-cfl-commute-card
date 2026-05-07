@@ -155,11 +155,9 @@ export const styles = css`
     align-items: center;
     gap: 10px;
     padding: 10px 16px;
-    background: #ffcc00;
+    background: #d4a017;
     color: #000000;
     font-size: 0.9rem;
-    font-family: 'Courier New', Courier, monospace;
-    letter-spacing: 1px;
     cursor: pointer;
     transition: filter 0.15s ease;
   }
