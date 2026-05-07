@@ -13,7 +13,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.0.0 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.1.2 ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -34,8 +34,7 @@ class CflCommuteCard extends LitElement {
       _returnEntityId: { type: String },
       _showReturn: { type: Boolean },
       _currentTime: { type: String },
-      _originId: { type: String },
-      _destinationId: { type: String }
+
     };
   }
 
@@ -59,8 +58,6 @@ class CflCommuteCard extends LitElement {
     this._returnEntityCacheKey = null;
     this._currentTime = this._getCurrentTime();
     this._timeInterval = null;
-    this._originId = '';
-    this._destinationId = '';
   }
 
   _getCurrentTime() {
@@ -192,9 +189,6 @@ class CflCommuteCard extends LitElement {
 
     this._origin = this._showReturn ? outboundDest : outboundOrigin;
     this._destination = this._showReturn ? outboundOrigin : outboundDest;
-    this._originId = this._showReturn ? outboundDestId : outboundOriginId;
-    this._destinationId = this._showReturn ? outboundOriginId : outboundDestId;
-
     if (this._trains && this._trains.length > 0) {
       this._trains = sortTrains(this._trains);
     }
@@ -621,8 +615,6 @@ class CflCommuteCard extends LitElement {
     } else {
       const originName = encodeURIComponent(this._origin || '');
       const destName = encodeURIComponent(this._destination || '');
-      const originId = this._originId || '';
-      const destId = this._destinationId || '';
       const now = new Date();
       const date = now.toLocaleDateString('en-GB', {
         day: '2-digit', month: '2-digit', year: 'numeric'
@@ -632,9 +624,7 @@ class CflCommuteCard extends LitElement {
       });
       const journeyUrl =
         `https://www.cfl.lu/fr-fr/search/searchresult` +
-        `?SearchDepartureExtId=${originId}` +
-        `&SearchDeparture=${originName}` +
-        `&SearchArrivalExtId=${destId}` +
+        `?SearchDeparture=${originName}` +
         `&SearchArrival=${destName}` +
         `&departureBullets=departure` +
         `&SearchDate=${encodeURIComponent(date)}` +
