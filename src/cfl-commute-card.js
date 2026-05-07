@@ -182,6 +182,7 @@ class CflCommuteCard extends LitElement {
       auto_refresh: true,
       refresh_interval: 60,
       calling_points_scroll_interval: 5000,
+      show_route: true,
       ...config
     };
 
@@ -559,7 +560,12 @@ class CflCommuteCard extends LitElement {
       <ha-card class="departure-board">
         <div class="board-header-row">
           <span class="col-time">${this._currentTime}</span>
-          <span class="col-title">Départ/Abfahrt</span>
+          <div class="col-title-wrapper">
+            <span class="col-title">Départ/Abfahrt</span>
+            ${this.config.show_route && this._origin && this._destination ? html`
+              <span class="board-header-route">${this._origin} → ${this._destination}</span>
+            ` : ''}
+          </div>
           <span class="col-logo">
             <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
               <g transform="translate(685, 175)">
