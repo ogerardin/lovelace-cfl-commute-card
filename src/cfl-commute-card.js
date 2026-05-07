@@ -508,7 +508,10 @@ class CflCommuteCard extends LitElement {
           ` : ''}
         </div>
         ${this._origin && this._destination ? html`
-          <div class="route">
+          <div class="route${this._returnEntityId ? ' clickable-route' : ''}"
+               @click="${this._returnEntityId ? this._toggleReturn : null}"
+               role="${this._returnEntityId ? 'button' : null}"
+               title="${this._returnEntityId ? (this._showReturn ? 'Show outbound journey' : 'Show return journey') : ''}">
             ${this._origin} → ${this._destination}
           </div>
         ` : ''}
@@ -563,7 +566,12 @@ class CflCommuteCard extends LitElement {
           <div class="col-title-wrapper">
             <span class="col-title">Départ/Abfahrt</span>
             ${this.config.show_route && this._origin && this._destination ? html`
-              <span class="board-header-route">${this._origin} → ${this._destination}</span>
+              <span class="board-header-route${this._returnEntityId ? ' clickable-route' : ''}"
+                    @click="${this._returnEntityId ? this._toggleReturn : null}"
+                    role="${this._returnEntityId ? 'button' : null}"
+                    title="${this._returnEntityId ? (this._showReturn ? 'Show outbound journey' : 'Show return journey') : ''}">
+                ${this._origin} → ${this._destination}
+              </span>
             ` : ''}
           </div>
           <span class="col-logo">

@@ -48,6 +48,14 @@ export const styles = css`
     color: var(--secondary-text-color, #757575);
   }
 
+  .route.clickable-route {
+    cursor: pointer;
+  }
+
+  .route.clickable-route:hover {
+    filter: brightness(0.85);
+  }
+
   .return-toggle {
     background: none;
     border: 1px solid var(--divider-color, #e0e0e0);
@@ -244,6 +252,14 @@ export const styles = css`
     white-space: nowrap;
     text-align: center;
     width: 100%;
+  }
+
+  .board-header-row .board-header-route.clickable-route {
+    cursor: pointer;
+  }
+
+  .board-header-row .board-header-route.clickable-route:hover {
+    filter: brightness(1.2);
   }
 
   .board-header-row .col-logo {
