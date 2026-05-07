@@ -130,6 +130,21 @@ export function formatCallingPointsDots(points, maxPoints = 999) {
 }
 
 /**
+ * Format calling points into lines for scrolling display
+ * @param {Array} points - Array of station names
+ * @param {number} perLine - Stations per line (default 3)
+ * @returns {string} HTML string with lines separated by <br>
+ */
+export function formatCallingPointsLines(points, perLine = 3) {
+  if (!points || points.length === 0) return ''
+  const lines = []
+  for (let i = 0; i < points.length; i += perLine) {
+    lines.push(points.slice(i, i + perLine).join(' • '))
+  }
+  return lines.join('<br>')
+}
+
+/**
  * Get train category from train data (RE, IC, RB, etc.)
  * @param {Object} train - Train object
  * @returns {string} Train category
