@@ -209,7 +209,7 @@ export const styles = css`
     justify-content: space-between;
     padding: 12px 16px;
     background: #010EA0;
-    height: 60px;
+    height: 72px;
     box-sizing: border-box;
   }
 
@@ -219,13 +219,31 @@ export const styles = css`
     width: 20%;
   }
 
-  .board-header-row .col-title {
+  .board-header-row .col-title-wrapper {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .board-header-row .col-title-wrapper .col-title {
     font-size: 1.8rem;
     color: #ffffff;
     text-align: center;
     font-weight: 700;
     letter-spacing: 2px;
-    width: 60%;
+    width: 100%;
+  }
+
+  .board-header-row .board-header-route {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.2;
+    white-space: nowrap;
+    text-align: center;
+    width: 100%;
   }
 
   .board-header-row .col-logo {
