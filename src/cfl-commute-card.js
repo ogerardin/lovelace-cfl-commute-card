@@ -33,7 +33,9 @@ class CflCommuteCard extends LitElement {
       _loading: { type: Boolean },
       _returnEntityId: { type: String },
       _showReturn: { type: Boolean },
-      _currentTime: { type: String }
+      _currentTime: { type: String },
+      _originId: { type: String },
+      _destinationId: { type: String }
     };
   }
 
@@ -57,6 +59,8 @@ class CflCommuteCard extends LitElement {
     this._returnEntityCacheKey = null;
     this._currentTime = this._getCurrentTime();
     this._timeInterval = null;
+    this._originId = '';
+    this._destinationId = '';
   }
 
   _getCurrentTime() {
@@ -143,6 +147,8 @@ class CflCommuteCard extends LitElement {
     const outboundDest = summaryEntity.attributes.destination_name ||
                          summaryEntity.attributes.destination ||
                          summaryEntity.attributes.to_station || '';
+    const outboundOriginId = summaryEntity.attributes.origin_id || '';
+    const outboundDestId = summaryEntity.attributes.destination_id || '';
 
     const cacheKey = `${outboundOrigin}|${outboundDest}`;
     if (cacheKey !== this._returnEntityCacheKey) {
@@ -186,6 +192,8 @@ class CflCommuteCard extends LitElement {
 
     this._origin = this._showReturn ? outboundDest : outboundOrigin;
     this._destination = this._showReturn ? outboundOrigin : outboundDest;
+    this._originId = this._showReturn ? outboundDestId : outboundOriginId;
+    this._destinationId = this._showReturn ? outboundOriginId : outboundDestId;
 
     if (this._trains && this._trains.length > 0) {
       this._trains = sortTrains(this._trains);
@@ -436,10 +444,10 @@ class CflCommuteCard extends LitElement {
     if (!this._hasDisruption) return '';
 
     const severityLabels = {
-      minor:    '',
-      major:    '',
+      minor:    'Retards mineurs',
+      major:    'Retards majeurs',
       severe:   'Perturbations importantes',
-      critical: 'PERTURBATIONS MAJEURES',
+      critical: '*** PERTURBATIONS MAJEURES ***',
     };
     const label = severityLabels[this._disruptionSeverity] || '';
 
@@ -611,9 +619,26 @@ class CflCommuteCard extends LitElement {
     if (url) {
       window.open(url, '_blank');
     } else {
-      const originCode = this._origin || '';
-      const destCode = this._destination || '';
-      const journeyUrl = `https://www.cfl.lu/fr-fr/search/searchresult?SearchDeparture=${originCode}&SearchArrival=${destCode}`;
+      const originName = encodeURIComponent(this._origin || '');
+      const destName = encodeURIComponent(this._destination || '');
+      const originId = this._originId || '';
+      const destId = this._destinationId || '';
+      const now = new Date();
+      const date = now.toLocaleDateString('en-GB', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      });
+      const time = now.toLocaleTimeString('en-GB', {
+        hour: '2-digit', minute: '2-digit'
+      });
+      const journeyUrl =
+        `https://www.cfl.lu/fr-fr/search/searchresult` +
+        `?SearchDepartureExtId=${originId}` +
+        `&SearchDeparture=${originName}` +
+        `&SearchArrivalExtId=${destId}` +
+        `&SearchArrival=${destName}` +
+        `&departureBullets=departure` +
+        `&SearchDate=${encodeURIComponent(date)}` +
+        `&SearchTime=${encodeURIComponent(time)}`;
       window.open(journeyUrl, '_blank');
     }
   }
