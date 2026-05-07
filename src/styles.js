@@ -278,24 +278,30 @@ export const styles = css`
 
   .board-row.cancelled .cancelled-label {
     color: #ffcc00;
-    font-size: 1rem;
+    font-size: 0.85rem;
     margin-top: 2px;
   }
 
   .board-row .row-time {
     width: 10%;
+    min-width: max-content;
+    flex-shrink: 0;
     display: flex;
     align-items: flex-start;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
+    margin-right: 12px;
   }
 
   .board-row .row-expected {
     width: 7%;
+    min-width: max-content;
+    flex-shrink: 0;
     display: flex;
     align-items: flex-start;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffcc00;
+    margin-right: 12px;
   }
 
   .board-row .row-dest {
@@ -307,13 +313,13 @@ export const styles = css`
   }
 
   .board-row .row-dest .destination {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
     font-weight: 700;
   }
 
   .board-row .row-dest .calling-stations {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ffffff;
     margin-top: 2px;
     white-space: normal;
@@ -321,7 +327,7 @@ export const styles = css`
   }
 
   .board-row .row-dest .delay-reason {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ffcc00;
     margin-top: 2px;
   }
@@ -333,19 +339,21 @@ export const styles = css`
   }
 
   .board-row .row-train .category {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
   }
 
   .board-row .row-train .number {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ffffff;
   }
 
   .board-row .row-platform {
     width: 8%;
+    min-width: max-content;
+    flex-shrink: 0;
     text-align: right;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
   }
 

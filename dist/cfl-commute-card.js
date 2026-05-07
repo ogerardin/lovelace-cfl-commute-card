@@ -3,7 +3,7 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,i=Symbol(),s=new WeakMap;let r=class{constructor(t,e,s){if(this._$cssResult$=!0,s!==i)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const i=this.t;if(e&&void 0===t){const e=void 0!==i&&1===i.length;e&&(t=s.get(i)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&s.set(i,t))}return t}toString(){return this.cssText}};const n=(t,...e)=>{const s=1===t.length?t[0]:e.reduce((e,i,s)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+t[s+1],t[0]);return new r(s,t,i)},o=e?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const i of t.cssRules)e+=i.cssText;return(t=>new r("string"==typeof t?t:t+"",void 0,i))(e)})(t):t,{is:a,defineProperty:c,getOwnPropertyDescriptor:d,getOwnPropertyNames:l,getOwnPropertySymbols:h,getPrototypeOf:u}=Object,p=globalThis,_=p.trustedTypes,f=_?_.emptyScript:"",g=p.reactiveElementPolyfillSupport,m=(t,e)=>t,v={toAttribute(t,e){switch(e){case Boolean:t=t?f:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let i=t;switch(e){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},y=(t,e)=>!a(t,e),b={attribute:!0,type:String,converter:v,reflect:!1,useDefault:!1,hasChanged:y};
+const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,i=Symbol(),s=new WeakMap;let r=class{constructor(t,e,s){if(this._$cssResult$=!0,s!==i)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const i=this.t;if(e&&void 0===t){const e=void 0!==i&&1===i.length;e&&(t=s.get(i)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&s.set(i,t))}return t}toString(){return this.cssText}};const n=(t,...e)=>{const s=1===t.length?t[0]:e.reduce((e,i,s)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+t[s+1],t[0]);return new r(s,t,i)},o=e?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const i of t.cssRules)e+=i.cssText;return(t=>new r("string"==typeof t?t:t+"",void 0,i))(e)})(t):t,{is:a,defineProperty:c,getOwnPropertyDescriptor:d,getOwnPropertyNames:l,getOwnPropertySymbols:h,getPrototypeOf:u}=Object,p=globalThis,f=p.trustedTypes,_=f?f.emptyScript:"",g=p.reactiveElementPolyfillSupport,m=(t,e)=>t,v={toAttribute(t,e){switch(e){case Boolean:t=t?_:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let i=t;switch(e){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},y=(t,e)=>!a(t,e),b={attribute:!0,type:String,converter:v,reflect:!1,useDefault:!1,hasChanged:y};
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -297,24 +297,30 @@ const w=globalThis,x=t=>t,E=w.trustedTypes,A=E?E.createPolicy("lit-html",{create
 
   .board-row.cancelled .cancelled-label {
     color: #ffcc00;
-    font-size: 1rem;
+    font-size: 0.85rem;
     margin-top: 2px;
   }
 
   .board-row .row-time {
     width: 10%;
+    min-width: max-content;
+    flex-shrink: 0;
     display: flex;
     align-items: flex-start;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
+    margin-right: 12px;
   }
 
   .board-row .row-expected {
     width: 7%;
+    min-width: max-content;
+    flex-shrink: 0;
     display: flex;
     align-items: flex-start;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffcc00;
+    margin-right: 12px;
   }
 
   .board-row .row-dest {
@@ -326,13 +332,13 @@ const w=globalThis,x=t=>t,E=w.trustedTypes,A=E?E.createPolicy("lit-html",{create
   }
 
   .board-row .row-dest .destination {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
     font-weight: 700;
   }
 
   .board-row .row-dest .calling-stations {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ffffff;
     margin-top: 2px;
     white-space: normal;
@@ -340,7 +346,7 @@ const w=globalThis,x=t=>t,E=w.trustedTypes,A=E?E.createPolicy("lit-html",{create
   }
 
   .board-row .row-dest .delay-reason {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ffcc00;
     margin-top: 2px;
   }
@@ -352,19 +358,21 @@ const w=globalThis,x=t=>t,E=w.trustedTypes,A=E?E.createPolicy("lit-html",{create
   }
 
   .board-row .row-train .category {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
   }
 
   .board-row .row-train .number {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ffffff;
   }
 
   .board-row .row-platform {
     width: 8%;
+    min-width: max-content;
+    flex-shrink: 0;
     text-align: right;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #ffffff;
   }
 
