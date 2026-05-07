@@ -3,7 +3,6 @@ import { styles } from './styles.js';
 import {
   formatTime,
   getStatusClass,
-  formatCallingPointsDots,
   formatCallingPointsLines,
   filterTrains,
   sortTrains,
@@ -146,7 +145,9 @@ class CflCommuteCard extends LitElement {
 
   updated(changedProps) {
     super.updated && super.updated(changedProps)
-    this._manageCallingPointCyclers()
+    if (changedProps.has('_trains') || changedProps.has('config')) {
+      this._manageCallingPointCyclers()
+    }
   }
 
   _manageCallingPointCyclers() {
