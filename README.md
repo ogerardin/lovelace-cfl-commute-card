@@ -8,18 +8,19 @@ A custom Lovelace card for Home Assistant that displays CFL (Luxembourg Railways
 
 For full, compact, and next-train-only views, use the [original lovelace-my-rail-commute-card](https://github.com/adamf83/lovelace-my-rail-commute-card) which also works with CFL integration data.
 
-![CFL Commute Card](screenshots/full-view.png)
+![CFL Commute Card](screenshots/full-view.jpg)
 
 ## Features
 
 - **Station Departure Board**: Realistic CFL-style LED departure board with current time
 - **Real Train Destinations**: Shows each train's actual destination from the `direction` field
-- **Calling Points**: Displays intermediate stops as bullet-separated list
+- **Calling Points Scrolling**: Auto-scrolling intermediate stops with configurable pause interval
 - **Delay Information**: Yellow highlighted expected times for delayed trains
 - **Cancelled Trains**: Yellow strikethrough on scheduled time with "Train supprimé" label
 - **Disruption Banner**: Color-coded disruption alerts (minor, major, severe, critical)
+- **Route Display**: Configurable `show_route` option to show origin → destination in the board header
+- **Return Journey**: Toggle button or clickable route to switch between outbound and return journeys
 - **Interactive**: Tap for more info, long-press to refresh
-- **Return Journey**: Toggle button to switch between outbound and return journeys
 
 ## Requirements
 

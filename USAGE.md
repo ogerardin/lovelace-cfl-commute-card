@@ -43,6 +43,8 @@ entity: sensor.your_commute_summary
 | `refresh_interval` | number | 60 | Refresh interval in seconds |
 | `tap_action` | object | more-info | Tap action: more-info, url, navigate, none |
 | `hold_action` | object | refresh | Hold action: refresh, more-info, none |
+| `show_route` | boolean | true | Show origin → destination route in the departure board header |
+| `calling_points_scroll_interval` | number | 5000 | Pause interval (ms) between calling points line shifts |
 | `colors` | object | {} | Custom color overrides (on_time, minor_delay, major_delay, cancelled) |
 
 ### Advanced Example
@@ -51,8 +53,10 @@ entity: sensor.your_commute_summary
 type: custom:cfl-commute-card
 entity: sensor.morning_commute_summary
 status_entity: sensor.morning_commute_status
+show_route: true
 hide_on_time_trains: false
 min_delay_to_show: 0
+calling_points_scroll_interval: 5000
 tap_action:
   action: url
   url_path: https://www.cfl.lu
