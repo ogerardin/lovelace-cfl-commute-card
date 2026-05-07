@@ -251,11 +251,11 @@ export const styles = css`
   .board-row {
     display: flex;
     align-items: flex-start;
-    padding: 12px 16px;
+    padding: 10px 16px;
     cursor: pointer;
     transition: background-color 0.2s ease;
     box-sizing: border-box;
-    min-height: 60px;
+    height: 106px;
   }
 
   .board-row-even {
@@ -317,18 +317,28 @@ export const styles = css`
     font-weight: 700;
   }
 
-  .board-row .row-dest .calling-stations {
+  .board-row .row-dest .calling-points-zone {
+    overflow: hidden;
+    height: 42px;
+    margin-top: 1px;
+  }
+
+  .board-row .row-dest .calling-points-scroll {
     font-size: 0.85rem;
+    line-height: 14px;
     color: #ffffff;
-    margin-top: 2px;
-    white-space: normal;
     word-wrap: break-word;
+    white-space: normal;
   }
 
   .board-row .row-dest .delay-reason {
     font-size: 0.85rem;
     color: #ffcc00;
-    margin-top: 2px;
+    margin-top: 1px;
+    line-height: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .board-row .row-train {
