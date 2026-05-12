@@ -191,6 +191,8 @@ Always run `npm run build` before committing/pushing to ensure the dist/ folder 
 
 ## Commits
 
+**Squash before push.** Each feature/bugfix branch should produce exactly one commit before pushing. Use `git merge --squash` or `git rebase -i` to squash intermediate commits.
+
 Use conventional commit format:
 ```
 feat: add compact view mode
@@ -208,3 +210,7 @@ Use plain version numbers (no "v" prefix) for git tags:
 Release titles should be: `Release X.Y.Z`
 
 Note: Older tags with `v` or `V` prefixes exist from the upstream repo before the fork and should not be emulated.
+
+## Releases
+
+Never reuse or overwrite an existing release tag. If a fix needs to go out after a release, create a new patch version (e.g., 2.2.1→2.2.2). A release tag and its commit are immutable once pushed. Deleting and recreating a tag with the same name on a different commit is equivalent to overwriting a release and is not allowed.

@@ -5,6 +5,7 @@ import {
   formatTime,
   getStatusClass,
   formatCallingPointsLines,
+  filterOriginCallingPoint,
   filterTrains,
   sortTrains,
   shouldShowTrains,
@@ -600,7 +601,7 @@ class CflCommuteCard extends LitElement {
     const hasDelay = train.expected_departure && train.expected_departure !== train.scheduled_departure;
     const category = getTrainCategory(train);
     const number = getTrainNumber(train);
-    const callingPoints = train.calling_points || [];
+    const callingPoints = filterOriginCallingPoint(train.calling_points, this._origin);
 
     return html`
       <div

@@ -130,6 +130,20 @@ export function formatCallingPointsDots(points, maxPoints = 999) {
 }
 
 /**
+ * Remove the first calling point if it matches the commute origin
+ * @param {Array} points - Array of station names
+ * @param {string} origin - Commute origin station name
+ * @returns {Array} Filtered calling points
+ */
+export function filterOriginCallingPoint(points, origin) {
+  if (!points || points.length === 0 || !origin) return points
+  if (points[0].trim().toLowerCase() === origin.trim().toLowerCase()) {
+    return points.slice(1)
+  }
+  return points
+}
+
+/**
  * Format calling points into lines for scrolling display
  * @param {Array} points - Array of station names
  * @param {number} perLine - Stations per line (default 3)
