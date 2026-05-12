@@ -80,5 +80,76 @@ test('returns null when points is null', () => {
   assert.equal(result, null)
 })
 
+test('removes last point when it matches destination', () => {
+  const result = filterOriginCallingPoint(
+    ['Mersch', 'Ettelbruck', 'Diekirch'],
+    'Luxembourg',
+    'Diekirch'
+  )
+  assert.deepEqual(result, ['Mersch', 'Ettelbruck'])
+})
+
+test('removes both origin and destination when both match', () => {
+  const result = filterOriginCallingPoint(
+    ['Luxembourg', 'Mersch', 'Ettelbruck', 'Diekirch'],
+    'Luxembourg',
+    'Diekirch'
+  )
+  assert.deepEqual(result, ['Mersch', 'Ettelbruck'])
+})
+
+test('keeps last point when it differs from destination', () => {
+  const result = filterOriginCallingPoint(
+    ['Mersch', 'Ettelbruck'],
+    'Luxembourg',
+    'Diekirch'
+  )
+  assert.deepEqual(result, ['Mersch', 'Ettelbruck'])
+})
+
+test('handles case-insensitive destination match', () => {
+  const result = filterOriginCallingPoint(
+    ['Mersch', 'diekirch'],
+    'Luxembourg',
+    'Diekirch'
+  )
+  assert.deepEqual(result, ['Mersch'])
+})
+
+test('returns empty when only point matches both origin and destination', () => {
+  const result = filterOriginCallingPoint(
+    ['Luxembourg'],
+    'Luxembourg',
+    'Ettelbruck'
+  )
+  assert.deepEqual(result, [])
+})
+
+test('removes destination when only last point matches (no origin match)', () => {
+  const result = filterOriginCallingPoint(
+    ['Mersch', 'Ettelbruck', 'Diekirch'],
+    'Luxembourg',
+    'Diekirch'
+  )
+  assert.deepEqual(result, ['Mersch', 'Ettelbruck'])
+})
+
+test('destination filtering with whitespace differences', () => {
+  const result = filterOriginCallingPoint(
+    ['Mersch', ' Diekirch '],
+    'Luxembourg',
+    'Diekirch'
+  )
+  assert.deepEqual(result, ['Mersch'])
+})
+
+test('no destination passed skips destination filtering', () => {
+  const result = filterOriginCallingPoint(
+    ['Mersch', 'Ettelbruck', 'Diekirch'],
+    'Luxembourg'
+  )
+  assert.deepEqual(result, ['Mersch', 'Ettelbruck', 'Diekirch'])
+})
+
 console.log(`\n${passed} passed, ${failed} failed`)
 process.exit(failed > 0 ? 1 : 0)

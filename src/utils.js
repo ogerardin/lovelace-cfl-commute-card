@@ -130,17 +130,24 @@ export function formatCallingPointsDots(points, maxPoints = 999) {
 }
 
 /**
- * Remove the first calling point if it matches the commute origin
+ * Remove first calling point if it matches origin,
+ * and last calling point if it matches destination
  * @param {Array} points - Array of station names
  * @param {string} origin - Commute origin station name
+ * @param {string} [destination] - Train destination station name
  * @returns {Array} Filtered calling points
  */
-export function filterOriginCallingPoint(points, origin) {
+export function filterOriginCallingPoint(points, origin, destination) {
   if (!points || points.length === 0 || !origin) return points
-  if (points[0].trim().toLowerCase() === origin.trim().toLowerCase()) {
-    return points.slice(1)
+  let filtered = points
+  if (filtered[0].trim().toLowerCase() === origin.trim().toLowerCase()) {
+    filtered = filtered.slice(1)
   }
-  return points
+  if (destination && filtered.length > 0 &&
+      filtered[filtered.length - 1].trim().toLowerCase() === destination.trim().toLowerCase()) {
+    filtered = filtered.slice(0, -1)
+  }
+  return filtered
 }
 
 /**

@@ -601,7 +601,7 @@ class CflCommuteCard extends LitElement {
     const hasDelay = train.expected_departure && train.expected_departure !== train.scheduled_departure;
     const category = getTrainCategory(train);
     const number = getTrainNumber(train);
-    const callingPoints = filterOriginCallingPoint(train.calling_points, this._origin);
+    const callingPoints = filterOriginCallingPoint(train.calling_points, this._origin, train.direction || this._destination);
 
     return html`
       <div
