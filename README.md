@@ -30,14 +30,23 @@ For full, compact, and next-train-only views, use the [original lovelace-my-rail
 
 ## Installation
 
-### Via HACS (Recommended)
+Choose one of the following methods (easiest first).
+
+### Using HACS (easy method)
+1. Follow this link:   
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ogerardin&repository=lovelace-cfl-commute-card&category=dashboard)
+2. Confirm adding custom repository
+3. Click on "Download" button (bottom right) and confirm
+4. When it's downloaded, refresh your browser
+
+### Using HACS (manually adding custom repo)
 1. Open HACS
 2. Click on "⋮" (top right), then "Custom repositories"
 3. Fill in as follows:
     - Repository: `https://github.com/ogerardin/lovelace-cfl-commute-card`
     - Type: 'Dashboard'
 4. Click "ADD"; after a few seconds the new integration appears under the "New" heading
-5. Click on "⋮", then "Download"
+5. Click on "⋮" on the corresponding row, then "Download" and confirm
 6. Accept the suggestion to refresh your browser
 
 ### Manual Installation
