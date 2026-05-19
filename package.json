@@ -1,6 +1,6 @@
 {
   "name": "cfl-commute-card",
-  "version": "1.0.0",
+  "version": "2.5.2",
   "description": "A custom Lovelace card for Home Assistant that displays CFL train departure information",
   "type": "module",
   "main": "dist/cfl-commute-card.js",
