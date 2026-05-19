@@ -222,7 +222,7 @@ export const styles = css`
   }
 
   .board-header-row .col-time {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     color: #ffffff;
     width: 20%;
   }

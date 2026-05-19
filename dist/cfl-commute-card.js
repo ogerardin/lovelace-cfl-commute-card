@@ -252,7 +252,7 @@ const lt=2;class ct{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i)
   }
 
   .board-header-row .col-time {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     color: #ffffff;
     width: 20%;
   }
