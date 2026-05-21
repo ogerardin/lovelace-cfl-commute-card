@@ -161,7 +161,8 @@ class CflCommuteCard extends LitElement {
     const interval = this.config.calling_points_scroll_interval || 5000
     const scrolls = this.shadowRoot.querySelectorAll('.calling-points-scroll')
     scrolls.forEach(el => {
-      if (el.scrollHeight <= el.clientHeight) return
+      const zone = el.parentElement
+      if (!zone || el.scrollHeight <= zone.clientHeight) return
       const cycler = new Cycler(el, interval)
       cycler.start()
       this._callingPointsCyclers.push(cycler)
