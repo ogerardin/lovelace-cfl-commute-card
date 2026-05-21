@@ -365,6 +365,12 @@ export const styles = css`
     white-space: normal;
   }
 
+  .board-row .row-dest .calling-points-scroll div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .board-row .row-dest .delay-reason {
     font-size: 0.85rem;
     color: #ffcc00;

@@ -20,7 +20,6 @@ console.info(
   'color: white; font-weight: bold; background: dimgray',
 );
 
-const CALLING_POINTS_LINE_HEIGHT = 14
 const CALLING_POINTS_VISIBLE_LINES = 3
 
 class Cycler {
@@ -31,14 +30,15 @@ class Cycler {
     this.timers = []
     this.alive = false
     this.scrollHeight = 0
+    this.steps = []
   }
 
   start() {
     this.alive = true
     this.line = 0
     this.scrollHeight = this.el.scrollHeight
-    const totalLines = Math.ceil(this.scrollHeight / CALLING_POINTS_LINE_HEIGHT)
-    const maxLine = totalLines - CALLING_POINTS_VISIBLE_LINES
+    this.steps = Array.from(this.el.children).map(child => child.offsetTop)
+    const maxLine = this.steps.length - CALLING_POINTS_VISIBLE_LINES
     if (maxLine <= 0) return
 
     this.el.style.transition = 'none'
@@ -47,7 +47,7 @@ class Cycler {
     const pause = () => {
       if (!this.alive) return
       this.el.style.transition = 'none'
-      this.el.style.transform = `translateY(-${this.line * CALLING_POINTS_LINE_HEIGHT}px)`
+      this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
 
       const t = setTimeout(() => {
         if (!this.alive) return
@@ -55,7 +55,7 @@ class Cycler {
         if (this.line > maxLine) this.line = 0
 
         this.el.style.transition = 'transform 1000ms ease'
-        this.el.style.transform = `translateY(-${this.line * CALLING_POINTS_LINE_HEIGHT}px)`
+        this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
 
         const t2 = setTimeout(pause, 1050)
         this.timers.push(t2)

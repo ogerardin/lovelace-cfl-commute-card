@@ -162,7 +162,7 @@ export function formatCallingPointsLines(points, perLine = 3) {
   for (let i = 0; i < points.length; i += perLine) {
     lines.push(points.slice(i, i + perLine).join(' • '))
   }
-  return lines.join('<br>')
+  return lines.map(l => `<div>${l}</div>`).join('')
 }
 
 /**
