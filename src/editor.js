@@ -283,7 +283,9 @@ class CflCommuteCardEditor extends LitElement {
 
   _entityChanged(ev) {
     if (!this._config || !this._hass) return;
-    this._config = { ...this._config, entity: ev.detail.value };
+    const newEntity = ev.detail.value ?? '';
+    if (newEntity === (this._config.entity ?? '')) return;
+    this._config = { ...this._config, entity: newEntity };
     this._fireConfigChanged();
   }
 

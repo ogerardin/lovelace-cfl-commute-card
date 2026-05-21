@@ -110,6 +110,7 @@ class CflCommuteCard extends LitElement {
     this._resolvedStatusEntityId = '';
     this._loading = true;
     this._toastTimer = null;
+    this._toastElement = null;
     this._returnEntityId = null;
     this._showReturn = false;
     this._returnEntityCacheKey = null;
@@ -142,6 +143,10 @@ class CflCommuteCard extends LitElement {
     if (this._toastTimer) {
       clearTimeout(this._toastTimer);
       this._toastTimer = null;
+    }
+    if (this._toastElement) {
+      this._toastElement.remove();
+      this._toastElement = null;
     }
     this._callingPointsCyclers.forEach(c => c.stop())
     this._callingPointsCyclers = []
@@ -205,9 +210,6 @@ class CflCommuteCard extends LitElement {
       throw new Error('Invalid configuration');
     }
 
-    if (!config.entity && config.entity !== '') {
-      throw new Error('Please select a CFL Commute summary sensor');
-    }
     this.config = {
       hide_on_time_trains: false,
       only_show_disrupted: false,
@@ -237,6 +239,8 @@ class CflCommuteCard extends LitElement {
 
   set hass(hass) {
     this._hass = hass;
+
+    if (!this.config) return;
 
     if (!this.config.entity) {
       this._loading = false;
@@ -499,10 +503,12 @@ class CflCommuteCard extends LitElement {
   }
 
   getCardSize() {
+    if (!this.config) return 3;
     return 2 + (this._trains?.length || 0);
   }
 
   render() {
+    if (!this.config) return html``;
     if (!this.config.entity) {
       return this._renderEmpty('No entity selected', 'Please select a CFL Commute summary sensor in the card configuration');
     }
@@ -823,13 +829,23 @@ class CflCommuteCard extends LitElement {
   }
 
   _showRefreshFeedback() {
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+    if (this._toastElement) {
+      this._toastElement.remove();
+      this._toastElement = null;
+    }
     const toast = document.createElement('div');
     toast.className = 'refresh-toast';
     toast.textContent = 'Refreshing...';
     this.shadowRoot.appendChild(toast);
+    this._toastElement = toast;
 
     this._toastTimer = setTimeout(() => {
       this._toastTimer = null;
+      this._toastElement = null;
       if (toast.isConnected) toast.remove();
     }, 2000);
   }
