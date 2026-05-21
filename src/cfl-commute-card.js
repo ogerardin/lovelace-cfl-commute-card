@@ -30,12 +30,14 @@ class Cycler {
     this.line = 0
     this.timers = []
     this.alive = false
+    this.scrollHeight = 0
   }
 
   start() {
     this.alive = true
     this.line = 0
-    const totalLines = Math.ceil(this.el.scrollHeight / CALLING_POINTS_LINE_HEIGHT)
+    this.scrollHeight = this.el.scrollHeight
+    const totalLines = Math.ceil(this.scrollHeight / CALLING_POINTS_LINE_HEIGHT)
     const maxLine = totalLines - CALLING_POINTS_VISIBLE_LINES
     if (maxLine <= 0) return
 
@@ -153,20 +155,49 @@ class CflCommuteCard extends LitElement {
   }
 
   _manageCallingPointCyclers() {
-    this._callingPointsCyclers.forEach(c => c.stop())
-    this._callingPointsCyclers = []
-
-    if (!this._trains || this._trains.length === 0) return
+    if (!this._trains || this._trains.length === 0) {
+      this._callingPointsCyclers.forEach(c => c.stop())
+      this._callingPointsCyclers = []
+      return
+    }
 
     const interval = this.config.calling_points_scroll_interval || 5000
     const scrolls = this.shadowRoot.querySelectorAll('.calling-points-scroll')
+
+    const cyclerMap = new Map()
+    for (const c of this._callingPointsCyclers) {
+      cyclerMap.set(c.el, c)
+    }
+
+    const newCyclers = []
+
     scrolls.forEach(el => {
       const zone = el.parentElement
       if (!zone || el.scrollHeight <= zone.clientHeight) return
+
+      const existing = cyclerMap.get(el)
+      if (existing && existing.alive &&
+          existing.scrollHeight === el.scrollHeight &&
+          existing.pauseMs === interval) {
+        newCyclers.push(existing)
+        cyclerMap.delete(el)
+        return
+      }
+
+      if (existing) {
+        existing.stop()
+        cyclerMap.delete(el)
+      }
       const cycler = new Cycler(el, interval)
       cycler.start()
-      this._callingPointsCyclers.push(cycler)
+      newCyclers.push(cycler)
     })
+
+    for (const c of cyclerMap.values()) {
+      c.stop()
+    }
+
+    this._callingPointsCyclers = newCyclers
   }
 
   setConfig(config) {
