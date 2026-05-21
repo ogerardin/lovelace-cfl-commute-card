@@ -293,8 +293,8 @@ class CflCommuteCard extends LitElement {
     if (activeEntity.attributes.all_trains && activeEntity.attributes.all_trains.length > 0) {
       const baseName = activeEntityId.replace('sensor.', '').replace('_summary', '').replace('_commute_summary', '');
       this._trains = activeEntity.attributes.all_trains.map((train, index) => {
-        const rawNum = train.train_number != null && train.train_number !== ''
-          ? String(train.train_number).toLowerCase().replace(/[^a-z0-9]/g, '_')
+        const rawNum = (/^\d+$/.test(String(train.train_number)))
+          ? String(train.train_number)
           : String(index + 1);
         return {
           ...train,
@@ -493,7 +493,9 @@ class CflCommuteCard extends LitElement {
         journey_duration: entity.attributes.journey_duration ||
                          entity.attributes.duration || '',
         service_type: entity.attributes.service_type ||
-                     entity.attributes.type || ''
+                     entity.attributes.type || '',
+        service_id: entity.attributes.service_id ||
+                   entity.attributes.train_number || ''
       };
 
       return train;

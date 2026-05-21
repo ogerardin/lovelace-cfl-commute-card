@@ -171,32 +171,30 @@ export function formatCallingPointsLines(points, perLine = 3) {
  * @returns {string} Train category
  */
 export function getTrainCategory(train) {
-  if (!train) return '';
-  if (train.train_category) return train.train_category;
-  if (train.service_type) return train.service_type;
-  if (train.train_number) {
-    const num = String(train.train_number);
-    if (num.startsWith('IC')) return 'IC';
-    if (num.startsWith('RE')) return 'RE';
-    if (num.startsWith('RB')) return 'RB';
-    if (num.startsWith('TER')) return 'TER';
-    if (num.startsWith('TGV')) return 'TGV';
-    if (num.startsWith('ICE')) return 'ICE';
-    if (num.startsWith('RJ')) return 'RJ';
+  if (!train) return ''
+  if (train.train_category) return train.train_category
+  if (train.service_type) return train.service_type
+  const serviceId = train.service_id || train.train_number
+  if (serviceId) {
+    const num = String(serviceId)
+    if (num.startsWith('IC')) return 'IC'
+    if (num.startsWith('RE')) return 'RE'
+    if (num.startsWith('RB')) return 'RB'
+    if (num.startsWith('TER')) return 'TER'
+    if (num.startsWith('TGV')) return 'TGV'
+    if (num.startsWith('ICE')) return 'ICE'
+    if (num.startsWith('RJ')) return 'RJ'
   }
-  return '';
+  return ''
 }
 
-/**
- * Get train number (numeric part) from train data
- * @param {Object} train - Train object
- * @returns {string} Train number
- */
 export function getTrainNumber(train) {
   if (!train) return '';
-  if (train.train_number) {
-    const num = String(train.train_number);
-    return num.replace(/^[A-Z]+/, '');
+  const serviceId = train.service_id || train.train_number;
+  if (serviceId) {
+    const num = String(serviceId);
+    const digits = num.replace(/^[A-Z]+\s*/, '');
+    if (digits && digits !== num) return digits;
   }
   if (train.train_id) {
     const match = train.train_id.match(/train[_-]?(\d+)$/i);
