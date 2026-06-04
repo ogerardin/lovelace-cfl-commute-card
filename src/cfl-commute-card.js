@@ -15,7 +15,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.7.1 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.7.2 ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -30,17 +30,20 @@ class Cycler {
     this.timers = []
     this.alive = false
     this.scrollHeight = 0
+    this.originalScrollHeight = 0
+    this.originalCount = 0
     this.steps = []
   }
 
   start() {
     this.alive = true
     this.line = 0
-    this.scrollHeight = this.el.scrollHeight
+    this.originalScrollHeight = this.el.scrollHeight
     const children = Array.from(this.el.children)
     this.originalCount = children.length
     children.forEach(child => this.el.appendChild(child.cloneNode(true)))
     this.steps = Array.from(this.el.children).map(child => child.offsetTop)
+    this.scrollHeight = this.el.scrollHeight
     if (this.originalCount <= CALLING_POINTS_VISIBLE_LINES) return
 
     this.el.style.transition = 'none'
@@ -48,10 +51,10 @@ class Cycler {
 
     const pause = () => {
       if (!this.alive) return
-      this.el.style.transition = 'none'
       if (this.line >= this.originalCount) {
         this.line -= this.originalCount
       }
+      this.el.style.transition = 'none'
       this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
 
       const t = setTimeout(() => {
@@ -195,7 +198,7 @@ class CflCommuteCard extends LitElement {
 
       const existing = cyclerMap.get(el)
       if (existing && existing.alive &&
-          existing.scrollHeight === el.scrollHeight &&
+          existing.originalScrollHeight === el.scrollHeight &&
           existing.pauseMs === interval) {
         newCyclers.push(existing)
         cyclerMap.delete(el)
