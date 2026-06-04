@@ -30,6 +30,16 @@ export const styles = css`
     background: var(--card-background-color, #fff);
   }
 
+  .dev-marker {
+    background: #ff4444;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+  }
+
   .header-content {
     display: flex;
     align-items: center;
@@ -363,13 +373,6 @@ export const styles = css`
     color: #ffffff;
     word-wrap: break-word;
     white-space: normal;
-    height: 42px;
-    overflow-y: scroll;
-    scrollbar-width: none;
-  }
-
-  .board-row .row-dest .calling-points-scroll::-webkit-scrollbar {
-    display: none;
   }
 
   .board-row .row-dest .calling-points-scroll div {

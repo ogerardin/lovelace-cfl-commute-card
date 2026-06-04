@@ -15,7 +15,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.7.3 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.7.4-DEV ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -27,60 +27,106 @@ class Cycler {
     this.el = el
     this.pauseMs = pauseMs
     this.line = 0
-    this.timers = []
     this.alive = false
-    this.scrollHeight = 0
-    this.originalScrollHeight = 0
-    this.originalCount = 0
-    this.stepHeight = 0
+    this._timer = null
+    this._raf = null
   }
 
   start() {
     this.alive = true
     this.line = 0
-    this.originalScrollHeight = this.el.scrollHeight
     const children = Array.from(this.el.children)
     this.originalCount = children.length
-    children.forEach(child => this.el.appendChild(child.cloneNode(true)))
-    this.scrollHeight = this.el.scrollHeight
-    this.stepHeight = this.el.children[0]?.offsetHeight || 14
     if (this.originalCount <= CALLING_POINTS_VISIBLE_LINES) return
 
-    this.el.style.scrollBehavior = 'auto'
-    this.el.scrollTop = 0
+    let y = 0
+    this.steps = children.map(child => {
+      const pos = y
+      y += child.offsetHeight
+      return pos
+    })
+    this.steps.push(y)
 
-    const advance = () => {
-      if (!this.alive) return
+    children.forEach(child => this.el.appendChild(child.cloneNode(true)))
 
-      this.line++
-      if (this.line >= this.originalCount) {
-        this.line = 0
-        this.el.style.scrollBehavior = 'auto'
-        this.el.scrollTop = 0
-        void this.el.offsetHeight
-        this.el.style.scrollBehavior = 'smooth'
-      }
+    this._setY(0)
+    this._scheduleAdvance()
+  }
 
-      this.el.scrollTop = this.line * this.stepHeight
+  _setY(y) {
+    this.el.style.transform = `translateY(${y}px)`
+  }
 
-      const t = setTimeout(advance, this.pauseMs + 1000)
-      this.timers.push(t)
+  _scheduleAdvance() {
+    if (!this.alive) return
+    this._timer = setTimeout(() => this._advance(), this.pauseMs)
+  }
+
+  _advance() {
+    if (!this.alive) return
+    this.line++
+
+    if (this.line > this.originalCount) {
+      this.line = 0
+      this._setY(0)
+      this._scheduleAdvance()
+      return
     }
 
-    const t = setTimeout(advance, this.pauseMs)
-    this.timers.push(t)
+    this._animateScroll(-this.steps[this.line])
+  }
+
+  _animateScroll(targetY) {
+    if (!this.alive) return
+    this._stopAnimation()
+
+    const startY = this._getCurrentY()
+    const duration = 350
+    const startTime = performance.now()
+
+    const frame = (now) => {
+      if (!this.alive) return
+      const t = Math.min((now - startTime) / duration, 1)
+      const ease = 1 - Math.pow(1 - t, 3)
+      const y = startY + (targetY - startY) * ease
+      this._setY(y)
+
+      if (t < 1) {
+        this._raf = requestAnimationFrame(frame)
+      } else {
+        this._raf = null
+        this._timer = setTimeout(() => {
+          if (!this.alive) return
+          this._scheduleAdvance()
+        }, 50)
+      }
+    }
+    this._raf = requestAnimationFrame(frame)
+  }
+
+  _getCurrentY() {
+    const m = this.el.style.transform.match(/translateY\((-?\d+(?:\.\d+)?)px\)/)
+    return m ? parseFloat(m[1]) : 0
+  }
+
+  _stopAnimation() {
+    if (this._raf) {
+      cancelAnimationFrame(this._raf)
+      this._raf = null
+    }
   }
 
   stop() {
     this.alive = false
-    this.timers.forEach(t => clearTimeout(t))
-    this.timers = []
-    this.el.style.scrollBehavior = ''
-    this.el.scrollTop = 0
-    if (this.originalCount) {
-      while (this.el.children.length > this.originalCount) {
-        this.el.removeChild(this.el.lastChild)
-      }
+    this._stopAnimation()
+    if (this._timer) {
+      clearTimeout(this._timer)
+      this._timer = null
+    }
+    this._setY(0)
+    const half = this.el.children.length / 2
+    while (this.el.children.length > half) {
+      this.el.removeChild(this.el.lastChild)
     }
   }
 }
@@ -170,49 +216,27 @@ class CflCommuteCard extends LitElement {
   }
 
   _manageCallingPointCyclers() {
-    if (!this._trains || this._trains.length === 0) {
-      this._callingPointsCyclers.forEach(c => c.stop())
-      this._callingPointsCyclers = []
-      return
-    }
+    if (!this._trains || this._trains.length === 0) return
 
-    const interval = this.config.calling_points_scroll_interval || 3000
+    const newHash = JSON.stringify(this._trains.map(t => t.calling_points || []))
+
+    if (newHash === this._lastCallingPointsHash && this._callingPointsCyclers.length > 0) return
+    this._lastCallingPointsHash = newHash
+
+    this._callingPointsCyclers.forEach(c => c.stop())
+    this._callingPointsCyclers = []
+
+    const interval = this.config.calling_points_scroll_interval || 5000
     const scrolls = this.shadowRoot.querySelectorAll('.calling-points-scroll')
-
-    const cyclerMap = new Map()
-    for (const c of this._callingPointsCyclers) {
-      cyclerMap.set(c.el, c)
-    }
-
-    const newCyclers = []
 
     scrolls.forEach(el => {
       const zone = el.parentElement
       if (!zone || el.scrollHeight <= zone.clientHeight) return
 
-      const existing = cyclerMap.get(el)
-      if (existing && existing.alive &&
-          existing.originalScrollHeight === el.scrollHeight &&
-          existing.pauseMs === interval) {
-        newCyclers.push(existing)
-        cyclerMap.delete(el)
-        return
-      }
-
-      if (existing) {
-        existing.stop()
-        cyclerMap.delete(el)
-      }
       const cycler = new Cycler(el, interval)
       cycler.start()
-      newCyclers.push(cycler)
+      this._callingPointsCyclers.push(cycler)
     })
-
-    for (const c of cyclerMap.values()) {
-      c.stop()
-    }
-
-    this._callingPointsCyclers = newCyclers
   }
 
   setConfig(config) {
@@ -541,13 +565,12 @@ class CflCommuteCard extends LitElement {
   }
 
   _renderHeader() {
-    const title = this.config.title || 'CFL Commute';
-
+    const title = this.config.title || 'CFL Commute'
     return html`
       <div class="card-header">
         <div class="header-content">
           <ha-icon icon="mdi:train"></ha-icon>
-          <span class="header-title">${title}</span>
+          <span class="header-title">${title} [v6]</span>
           ${this._returnEntityId ? html`
             <button
               class="return-toggle ${this._showReturn ? 'active' : ''}"
@@ -615,7 +638,7 @@ class CflCommuteCard extends LitElement {
         <div class="board-header-row">
           <span class="col-time">${this._currentTime}</span>
           <div class="col-title-wrapper">
-            <span class="col-title">Départ/Abfahrt</span>
+            <span class="col-title">Départ/Abfahrt [v6]</span>
             ${this.config.show_route && this._origin && this._destination ? html`
               <span class="board-header-route${this._returnEntityId ? ' clickable-route' : ''}"
                     @click="${this._returnEntityId ? this._toggleReturn : null}"
