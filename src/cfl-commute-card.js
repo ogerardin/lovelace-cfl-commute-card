@@ -15,7 +15,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.7.0 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.7.1 ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -37,9 +37,11 @@ class Cycler {
     this.alive = true
     this.line = 0
     this.scrollHeight = this.el.scrollHeight
+    const children = Array.from(this.el.children)
+    this.originalCount = children.length
+    children.forEach(child => this.el.appendChild(child.cloneNode(true)))
     this.steps = Array.from(this.el.children).map(child => child.offsetTop)
-    const maxLine = this.steps.length - CALLING_POINTS_VISIBLE_LINES
-    if (maxLine <= 0) return
+    if (this.originalCount <= CALLING_POINTS_VISIBLE_LINES) return
 
     this.el.style.transition = 'none'
     this.el.style.transform = 'translateY(0px)'
@@ -47,12 +49,18 @@ class Cycler {
     const pause = () => {
       if (!this.alive) return
       this.el.style.transition = 'none'
+      if (this.line >= this.originalCount) {
+        this.line -= this.originalCount
+      }
       this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
 
       const t = setTimeout(() => {
         if (!this.alive) return
         this.line++
-        if (this.line > maxLine) this.line = 0
+        const maxLine = this.steps.length - CALLING_POINTS_VISIBLE_LINES
+        if (this.line > maxLine) {
+          this.line -= this.originalCount
+        }
 
         this.el.style.transition = 'transform 1000ms ease'
         this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
@@ -72,6 +80,11 @@ class Cycler {
     this.timers = []
     this.el.style.transition = 'none'
     this.el.style.transform = 'translateY(0px)'
+    if (this.originalCount) {
+      while (this.el.children.length > this.originalCount) {
+        this.el.removeChild(this.el.lastChild)
+      }
+    }
   }
 }
 
@@ -166,7 +179,7 @@ class CflCommuteCard extends LitElement {
       return
     }
 
-    const interval = this.config.calling_points_scroll_interval || 5000
+    const interval = this.config.calling_points_scroll_interval || 3000
     const scrolls = this.shadowRoot.querySelectorAll('.calling-points-scroll')
 
     const cyclerMap = new Map()
@@ -216,7 +229,7 @@ class CflCommuteCard extends LitElement {
       min_delay_to_show: 0,
       auto_refresh: true,
       refresh_interval: 60,
-      calling_points_scroll_interval: 5000,
+      calling_points_scroll_interval: 3000,
       show_route: true,
       ...config
     };

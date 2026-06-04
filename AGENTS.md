@@ -214,3 +214,5 @@ Note: Older tags with `v` or `V` prefixes exist from the upstream repo before th
 ## Releases
 
 Never reuse or overwrite an existing release tag. If a fix needs to go out after a release, create a new patch version (e.g., 2.2.1→2.2.2). A release tag and its commit are immutable once pushed. Deleting and recreating a tag with the same name on a different commit is equivalent to overwriting a release and is not allowed.
+
+**Always confirm with the user before creating any release** (tag + push + gh release create). Never assume the user wants a release just because commits were made.
