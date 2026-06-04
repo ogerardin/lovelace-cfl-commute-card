@@ -15,7 +15,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.7.4-DEV ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.7.5-DEV ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -570,7 +570,7 @@ class CflCommuteCard extends LitElement {
       <div class="card-header">
         <div class="header-content">
           <ha-icon icon="mdi:train"></ha-icon>
-          <span class="header-title">${title} [v6]</span>
+          <span class="header-title">${title}</span>
           ${this._returnEntityId ? html`
             <button
               class="return-toggle ${this._showReturn ? 'active' : ''}"
@@ -638,7 +638,7 @@ class CflCommuteCard extends LitElement {
         <div class="board-header-row">
           <span class="col-time">${this._currentTime}</span>
           <div class="col-title-wrapper">
-            <span class="col-title">Départ/Abfahrt [v6]</span>
+            <span class="col-title">Départ/Abfahrt</span>
             ${this.config.show_route && this._origin && this._destination ? html`
               <span class="board-header-route${this._returnEntityId ? ' clickable-route' : ''}"
                     @click="${this._returnEntityId ? this._toggleReturn : null}"
