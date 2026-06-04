@@ -363,6 +363,13 @@ export const styles = css`
     color: #ffffff;
     word-wrap: break-word;
     white-space: normal;
+    height: 42px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+
+  .board-row .row-dest .calling-points-scroll::-webkit-scrollbar {
+    display: none;
   }
 
   .board-row .row-dest .calling-points-scroll div {

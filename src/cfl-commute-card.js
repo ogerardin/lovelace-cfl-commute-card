@@ -15,7 +15,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.7.2 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.7.3 ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -32,7 +32,7 @@ class Cycler {
     this.scrollHeight = 0
     this.originalScrollHeight = 0
     this.originalCount = 0
-    this.steps = []
+    this.stepHeight = 0
   }
 
   start() {
@@ -42,47 +42,41 @@ class Cycler {
     const children = Array.from(this.el.children)
     this.originalCount = children.length
     children.forEach(child => this.el.appendChild(child.cloneNode(true)))
-    this.steps = Array.from(this.el.children).map(child => child.offsetTop)
     this.scrollHeight = this.el.scrollHeight
+    this.stepHeight = this.el.children[0]?.offsetHeight || 14
     if (this.originalCount <= CALLING_POINTS_VISIBLE_LINES) return
 
-    this.el.style.transition = 'none'
-    this.el.style.transform = 'translateY(0px)'
+    this.el.style.scrollBehavior = 'auto'
+    this.el.scrollTop = 0
 
-    const pause = () => {
+    const advance = () => {
       if (!this.alive) return
+
+      this.line++
       if (this.line >= this.originalCount) {
-        this.line -= this.originalCount
+        this.line = 0
+        this.el.style.scrollBehavior = 'auto'
+        this.el.scrollTop = 0
+        void this.el.offsetHeight
+        this.el.style.scrollBehavior = 'smooth'
       }
-      this.el.style.transition = 'none'
-      this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
 
-      const t = setTimeout(() => {
-        if (!this.alive) return
-        this.line++
-        const maxLine = this.steps.length - CALLING_POINTS_VISIBLE_LINES
-        if (this.line > maxLine) {
-          this.line -= this.originalCount
-        }
+      this.el.scrollTop = this.line * this.stepHeight
 
-        this.el.style.transition = 'transform 1000ms ease'
-        this.el.style.transform = `translateY(-${this.steps[this.line]}px)`
-
-        const t2 = setTimeout(pause, 1050)
-        this.timers.push(t2)
-      }, this.pauseMs)
+      const t = setTimeout(advance, this.pauseMs + 1000)
       this.timers.push(t)
     }
 
-    pause()
+    const t = setTimeout(advance, this.pauseMs)
+    this.timers.push(t)
   }
 
   stop() {
     this.alive = false
     this.timers.forEach(t => clearTimeout(t))
     this.timers = []
-    this.el.style.transition = 'none'
-    this.el.style.transform = 'translateY(0px)'
+    this.el.style.scrollBehavior = ''
+    this.el.scrollTop = 0
     if (this.originalCount) {
       while (this.el.children.length > this.originalCount) {
         this.el.removeChild(this.el.lastChild)
@@ -682,7 +676,7 @@ class CflCommuteCard extends LitElement {
           ` : ''}
           ${!train.is_cancelled ? html`
             <div class="calling-points-zone">
-              <div class="calling-points-scroll" style="transform: translateY(0px)">
+              <div class="calling-points-scroll">
                 ${callingPoints.length > 0
                   ? unsafeHTML(formatCallingPointsLines(callingPoints))
                   : html`<span style="visibility:hidden">—</span>`}
