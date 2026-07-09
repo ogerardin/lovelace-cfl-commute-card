@@ -8,7 +8,7 @@ A custom Lovelace card for Home Assistant that displays CFL (Luxembourg Railways
 
 For full, compact, and next-train-only views, use the [original lovelace-my-rail-commute-card](https://github.com/adamf83/lovelace-my-rail-commute-card) which also works with CFL integration data.
 
-![CFL Commute Card](screenshots/full-view.jpg)
+![CFL Commute Card](https://raw.githubusercontent.com/ogerardin/lovelace-cfl-commute-card/main/screenshots/full-view.jpg)
 
 ## Features
 
