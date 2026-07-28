@@ -16,7 +16,7 @@ import {
 import './editor.js';
 
 console.info(
-  '%c CFL-COMMUTE-CARD \n%c Version 2.8.0 ',
+  '%c CFL-COMMUTE-CARD \n%c Version 2.8.1 ',
   'color: cyan; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
