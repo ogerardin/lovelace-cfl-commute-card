@@ -20,6 +20,7 @@ For full, compact, and next-train-only views, use the [original lovelace-my-rail
 - **Disruption Banner**: Color-coded disruption alerts (minor, major, severe, critical)
 - **Route Display**: Configurable `show_route` option to show origin → destination in the board header
 - **Return Journey**: Toggle button or clickable route to switch between outbound and return journeys
+- **Reliability History Panel**: Collapsible panel showing historical on-time performance, delay KPIs, and per-day reliability indicators
 - **Interactive**: Tap for more info, long-press to refresh
 
 ## Requirements

@@ -4,3 +4,7 @@
 type: custom:cfl-commute-card
 entity: sensor.your_commute_summary
 title: Platform Display
+
+# History Panel (optional - requires historical_reliability and historical_delays sensors)
+# show_history_panel: true
+# history_days: 7

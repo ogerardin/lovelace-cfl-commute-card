@@ -45,6 +45,8 @@ entity: sensor.your_commute_summary
 | `hold_action` | object | refresh | Hold action: refresh, more-info, none |
 | `show_route` | boolean | true | Show origin → destination route in the departure board header |
 | `calling_points_scroll_interval` | number | 5000 | Pause interval (ms) between calling points line shifts |
+| `show_history_panel` | boolean | false | Show collapsible reliability history panel below the departure board |
+| `history_days` | number | 7 | Number of days of historical data to display (used with show_history_panel) |
 | `colors` | object | {} | Custom color overrides (on_time, minor_delay, major_delay, cancelled) |
 
 ### Advanced Example
@@ -57,6 +59,8 @@ show_route: true
 hide_on_time_trains: false
 min_delay_to_show: 0
 calling_points_scroll_interval: 5000
+show_history_panel: true
+history_days: 7
 tap_action:
   action: url
   url_path: https://www.cfl.lu

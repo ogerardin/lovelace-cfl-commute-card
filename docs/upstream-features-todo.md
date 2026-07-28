@@ -13,15 +13,15 @@ Show travel duration in each train row (e.g. "On time · 45m"). Adds `show_journ
 - Data: `journey_duration` attr already in card model; would need `calculateJourneyDuration()` and `journey_time_approx`
 - Note: Real departure boards don't show journey time per train
 
-## 2. History / Reliability Panel
+## 2. History / Reliability Panel ~~Done in v2.8.0~~
 
 **Upstream commits:** `4e60c60`, `b9b2d3d`, `15e6af9`
 
-Expandable panel showing daily reliability, KPIs (on-time %), best/worst days, with dark-mode styles for board view.
+~~Expandable panel showing daily reliability, KPIs (on-time %), best/worst days, with dark-mode styles for board view.~~
 
-- Effort: High (UI code + backend integration)
-- Data: Requires `sensor.{base}_historical_reliability` and `sensor.{base}_historical_delays` sensors that `ha-cfl-commute` does not provide
-- Note: No real departure board shows historical reliability data
+- ~~Effort: High (UI code + backend integration)~~
+- ~~Data: Requires `sensor.{base}_historical_reliability` and `sensor.{base}_historical_delays` sensors that `ha-cfl-commute` does not provide~~
+- ~~Note: No real departure board shows historical reliability data~~
 
 ## 3. Multi-Destination Grouping
 
