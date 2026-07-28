@@ -220,7 +220,27 @@ class CflCommuteCardEditor extends LitElement {
               @change=${this._toggleChanged('auto_refresh')}
             ></ha-switch>
           </ha-formfield>
+
+          <ha-formfield label="Show History Panel">
+            <ha-switch
+              .checked=${this._config.show_history_panel === true}
+              @change=${this._toggleChanged('show_history_panel')}
+            ></ha-switch>
+          </ha-formfield>
         </div>
+
+        ${this._config.show_history_panel ? html`
+          <div class="option">
+            <span class="native-select-label">History Days</span>
+            <div class="native-select-container">
+              <select @change=${this._historyDaysChanged}>
+                <option value="7" ?selected=${(this._config.history_days ?? 7) === 7}>7 days</option>
+                <option value="14" ?selected=${(this._config.history_days ?? 7) === 14}>14 days</option>
+                <option value="30" ?selected=${(this._config.history_days ?? 7) === 30}>30 days</option>
+              </select>
+            </div>
+          </div>
+        ` : ''}
 
         <div class="option">
           <ha-textfield
@@ -320,6 +340,13 @@ class CflCommuteCardEditor extends LitElement {
     if (!this._config || !this._hass) return;
     const value = parseInt(ev.target.value, 10) || 60;
     this._config = { ...this._config, refresh_interval: value };
+    this._fireConfigChanged();
+  }
+
+  _historyDaysChanged(ev) {
+    if (!this._config || !this._hass) return;
+    const value = parseInt(ev.target.value, 10) || 7;
+    this._config = { ...this._config, history_days: value };
     this._fireConfigChanged();
   }
 

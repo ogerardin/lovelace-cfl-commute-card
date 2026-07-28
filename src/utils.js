@@ -20,7 +20,10 @@ export function formatTime(timeStr) {
 
   try {
     const date = new Date(str);
-    if (isNaN(date.getTime())) return str;
+    if (isNaN(date.getTime())) {
+      console.warn('formatTime: unparseable value:', str);
+      return '—';
+    }
 
     return date.toLocaleTimeString('en-GB', {
       hour: '2-digit',
@@ -29,7 +32,7 @@ export function formatTime(timeStr) {
     });
   } catch (e) {
     console.warn('formatTime: could not parse time value:', str, e);
-    return str;
+    return '—';
   }
 }
 
@@ -201,4 +204,16 @@ export function getTrainNumber(train) {
     if (match) return match[1];
   }
   return '';
+}
+
+/**
+ * Get CSS class for a reliability percentage value
+ * @param {number|null} pct - On-time percentage (0-100) or null
+ * @returns {string} CSS class name
+ */
+export function getReliabilityClass(pct) {
+  if (pct === null || pct === undefined) return 'kpi-neutral';
+  if (pct >= 90) return 'kpi-good';
+  if (pct >= 70) return 'kpi-moderate';
+  return 'kpi-poor';
 }

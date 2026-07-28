@@ -10,7 +10,8 @@ import {
   sortTrains,
   shouldShowTrains,
   getTrainCategory,
-  getTrainNumber
+  getTrainNumber,
+  getReliabilityClass,
 } from './utils.js';
 import './editor.js';
 
@@ -144,10 +145,13 @@ class CflCommuteCard extends LitElement {
       _disruptionMessage: { type: String },
       _resolvedStatusEntityId: { type: String },
       _loading: { type: Boolean },
+      _entityNotFound: { type: Boolean },
       _returnEntityId: { type: String },
       _showReturn: { type: Boolean },
       _currentTime: { type: String },
-
+      _historyPanelOpen: { type: Boolean },
+      _histRelAttrs: { type: Object },
+      _histDelAttrs: { type: Object },
     };
   }
 
@@ -165,6 +169,7 @@ class CflCommuteCard extends LitElement {
     this._disruptionMessage = '';
     this._resolvedStatusEntityId = '';
     this._loading = true;
+    this._entityNotFound = false;
     this._toastTimer = null;
     this._toastElement = null;
     this._returnEntityId = null;
@@ -173,6 +178,9 @@ class CflCommuteCard extends LitElement {
     this._currentTime = this._getCurrentTime();
     this._timeInterval = null;
     this._callingPointsCyclers = []
+    this._historyPanelOpen = false;
+    this._histRelAttrs = null;
+    this._histDelAttrs = null;
   }
 
   _getCurrentTime() {
@@ -286,10 +294,12 @@ class CflCommuteCard extends LitElement {
 
     if (!summaryEntity) {
       console.error('Entity not found:', this.config.entity);
+      this._entityNotFound = true;
       this._loading = false;
       this._trains = [];
       return;
     }
+    this._entityNotFound = false;
 
     const outboundOrigin = summaryEntity.attributes.origin_name ||
                            summaryEntity.attributes.origin ||
@@ -401,6 +411,8 @@ class CflCommuteCard extends LitElement {
     if (this._trains && this._trains.length > 0) {
       this._trains = filterTrains(this._trains, this.config);
     }
+
+    this._autoDiscoverHistory(hass, activeEntityId);
 
     this._loading = false;
     this.requestUpdate();
@@ -557,6 +569,10 @@ class CflCommuteCard extends LitElement {
       return this._renderEmpty('No disruption detected', 'Trains will appear when there is disruption');
     }
 
+    if (this._entityNotFound) {
+      return this._renderEmpty('Entity not found', `Cannot find entity: ${this.config.entity}`);
+    }
+
     if (!this._trains || this._trains.length === 0) {
       return this._renderEmpty();
     }
@@ -565,7 +581,7 @@ class CflCommuteCard extends LitElement {
   }
 
   _renderHeader() {
-    const title = this.config.title || 'CFL Commute'
+    const title = String(this.config.title || 'CFL Commute').replace(/<[^>]*>/g, '')
     return html`
       <div class="card-header">
         <div class="header-content">
@@ -664,6 +680,8 @@ class CflCommuteCard extends LitElement {
         </div>
 
         ${this._renderDisruptionBanner()}
+        ${this._renderHistoryPanel()}
+        ${this._renderFooter()}
       </ha-card>
     `;
   }
@@ -883,6 +901,150 @@ class CflCommuteCard extends LitElement {
       this._toastElement = null;
       if (toast.isConnected) toast.remove();
     }, 2000);
+  }
+
+  _autoDiscoverHistory(hass, activeEntityId) {
+    if (!this.config.show_history_panel) return;
+    const activeBase = activeEntityId
+      .replace('sensor.', '')
+      .replace('_summary', '')
+      .replace('_commute_summary', '');
+    const relId = `sensor.${activeBase}_historical_reliability`;
+    const delId = `sensor.${activeBase}_historical_delays`;
+    const relEntity = hass.states[relId];
+    const delEntity = hass.states[delId];
+    if (!relEntity && !delEntity) {
+      console.warn(
+        'cfl-commute-card: show_history_panel enabled but no history sensors found.',
+        `Expected: ${relId} / ${delId}`
+      );
+    }
+    this._histRelAttrs = relEntity ? relEntity.attributes : null;
+    this._histDelAttrs = delEntity ? delEntity.attributes : null;
+  }
+
+  _toggleHistoryPanel() {
+    this._historyPanelOpen = !this._historyPanelOpen;
+  }
+
+  _renderFooter() {
+    if (!this.config.show_history_panel) return '';
+    return html`
+      <div class="card-footer">
+        <span></span>
+        <button
+          class="history-toggle ${this._historyPanelOpen ? 'active' : ''}"
+          @click="${this._toggleHistoryPanel}"
+          title="${this._historyPanelOpen ? 'Hide reliability history' : 'Show reliability history'}"
+        >
+          <ha-icon icon="mdi:chart-line"></ha-icon>
+        </button>
+      </div>
+    `;
+  }
+
+  _renderHistoryPanel() {
+    if (!this.config.show_history_panel || !this._historyPanelOpen) return '';
+
+    const rel = this._histRelAttrs;
+    const del = this._histDelAttrs;
+
+    if (!rel && !del) {
+      return html`
+        <div class="history-panel">
+          <div class="history-empty">No reliability data available yet — check back after a few updates.</div>
+        </div>
+      `;
+    }
+
+    const histDays = Math.min(this.config.history_days || 7, 30);
+    const breakdown = rel?.daily_breakdown || [];
+    const recentDays = breakdown.slice(-histDays);
+
+    const todayPct = rel?.on_time_pct_today ?? null;
+    const sevenDayPct = rel?.on_time_pct_7day ?? null;
+    const thirtyDayPct = rel?.on_time_pct_30day ?? null;
+    const avgDelay7d = del?.avg_delay_7day ?? null;
+    const bestDay = del?.best_day ?? null;
+    const worstDay = del?.worst_day ?? null;
+
+    return html`
+      <div class="history-panel">
+        <div class="history-kpis">
+          ${this._renderKpiPill('Today', todayPct, '%', false)}
+          ${this._renderKpiPill('7-day', sevenDayPct, '%', false)}
+          ${this._renderKpiPill('30-day', thirtyDayPct, '%', false)}
+          ${this._renderKpiPill('Avg delay', avgDelay7d, ' min', true)}
+        </div>
+
+        ${recentDays.length > 0 ? html`
+          <div class="history-days">
+            ${recentDays.map(day => this._renderDaySquare(day))}
+          </div>
+        ` : ''}
+
+        ${bestDay || worstDay ? html`
+          <div class="history-bestworst">
+            ${bestDay ? html`
+              <span class="history-best">
+                <ha-icon icon="mdi:thumb-up-outline"></ha-icon>
+                Best: ${this._formatHistoryDate(bestDay.date)} (${bestDay.on_time_pct}%)
+              </span>
+            ` : html`<span></span>`}
+            ${worstDay ? html`
+              <span class="history-worst">
+                <ha-icon icon="mdi:thumb-down-outline"></ha-icon>
+                Worst: ${this._formatHistoryDate(worstDay.date)} (${worstDay.on_time_pct}%)
+              </span>
+            ` : ''}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  _renderKpiPill(label, value, unit, isDelay) {
+    const cls = isDelay ? 'kpi-neutral' : getReliabilityClass(value);
+    const display = value !== null && value !== undefined ? `${value}${unit}` : '—';
+    return html`
+      <div class="kpi-pill ${cls}">
+        <span class="kpi-value">${display}</span>
+        <span class="kpi-label">${label}</span>
+      </div>
+    `;
+  }
+
+  _renderDaySquare(day) {
+    const pct = day.on_time_pct;
+    let cls = 'day-sq-nodata';
+    if (pct !== null && pct !== undefined) {
+      if (pct >= 90) cls = 'day-sq-good';
+      else if (pct >= 70) cls = 'day-sq-moderate';
+      else cls = 'day-sq-poor';
+    }
+
+    const [year, month, dayNum] = day.date.split('-').map(Number);
+    const date = new Date(year, month - 1, dayNum);
+    const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
+    const pctLabel = pct !== null && pct !== undefined ? `${Math.round(pct)}%` : '—';
+    const tooltip = pct !== null && pct !== undefined
+      ? `${dayName} ${dayNum}: ${pct}% on-time${day.avg_delay_minutes ? `, avg ${day.avg_delay_minutes} min late` : ''}`
+      : `${dayName} ${dayNum}: No data`;
+
+    return html`
+      <div class="day-sq ${cls}" title="${tooltip}">
+        <span class="day-sq-label">${dayName}</span>
+        <span class="day-sq-pct">${pctLabel}</span>
+      </div>
+    `;
+  }
+
+  _formatHistoryDate(dateStr) {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString('en-GB', {
+      weekday: 'short', day: 'numeric', month: 'short'
+    });
   }
 
   static getConfigElement() {

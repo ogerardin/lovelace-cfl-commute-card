@@ -503,6 +503,199 @@ export const styles = css`
     }
   }
 
+  /* ==================== HISTORY PANEL (Departure Board) ==================== */
+
+  ha-card.departure-board .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    background: #00045A;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    min-height: 32px;
+  }
+
+  ha-card.departure-board .history-toggle {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  ha-card.departure-board .history-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  ha-card.departure-board .history-toggle.active {
+    background: #010EA0;
+    color: #4fc3f7;
+    border-color: #4fc3f7;
+  }
+
+  ha-card.departure-board .history-panel {
+    padding: 12px 16px;
+    background: #00045A;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  ha-card.departure-board .history-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    padding: 16px 0;
+  }
+
+  ha-card.departure-board .history-kpis {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  ha-card.departure-board .kpi-pill {
+    flex: 1;
+    min-width: 60px;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  ha-card.departure-board .kpi-pill .kpi-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  ha-card.departure-board .kpi-pill .kpi-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+  }
+
+  ha-card.departure-board .kpi-pill.kpi-good {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #4caf50;
+    color: #81c784;
+  }
+
+  ha-card.departure-board .kpi-pill.kpi-moderate {
+    background: rgba(255, 152, 0, 0.2);
+    border-color: #ff9800;
+    color: #ffb74d;
+  }
+
+  ha-card.departure-board .kpi-pill.kpi-poor {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: #f44336;
+    color: #e57373;
+  }
+
+  ha-card.departure-board .kpi-pill.kpi-neutral {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  ha-card.departure-board .history-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  ha-card.departure-board .day-sq {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 2px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    cursor: default;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    min-width: 0;
+  }
+
+  ha-card.departure-board .day-sq .day-sq-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  ha-card.departure-board .day-sq .day-sq-pct {
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  ha-card.departure-board .day-sq.day-sq-good {
+    background: rgba(76, 175, 80, 0.25);
+    border-color: #4caf50;
+    color: #81c784;
+  }
+
+  ha-card.departure-board .day-sq.day-sq-moderate {
+    background: rgba(255, 152, 0, 0.25);
+    border-color: #ff9800;
+    color: #ffb74d;
+  }
+
+  ha-card.departure-board .day-sq.day-sq-poor {
+    background: rgba(244, 67, 54, 0.25);
+    border-color: #f44336;
+    color: #e57373;
+  }
+
+  ha-card.departure-board .day-sq.day-sq-nodata {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  ha-card.departure-board .history-bestworst {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+  }
+
+  ha-card.departure-board .history-best {
+    color: #81c784;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  ha-card.departure-board .history-best ha-icon {
+    --mdc-icon-size: 14px;
+  }
+
+  ha-card.departure-board .history-worst {
+    color: #e57373;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  ha-card.departure-board .history-worst ha-icon {
+    --mdc-icon-size: 14px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
